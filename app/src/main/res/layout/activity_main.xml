@@ -20,7 +20,5 @@
         app:fabSize="normal"
         />
 
-    
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
