@@ -6,15 +6,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "MainActivity";
-
-    private ArrayList<String> mNomeTask = new ArrayList<>();
-
+    private ArrayList<String> mTaskName = new ArrayList<>();
+    private FloatingActionButton addButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,59 +24,79 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Log.d(TAG, "OnCreate: started");
 
+        addButton = findViewById(R.id.fabAdd);
+
         sampleText();
         initRecyclerView();
+
+        addButton.setOnClickListener(this);
+
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            //pressing add floating button
+            case R.id.fabAdd:
+                addBtnDialog();
+                break;
+        }
+    }
+
+    private void addBtnDialog() {
+
+        AddDialog addDialog = new AddDialog();
+        addDialog.show(getSupportFragmentManager(), "Add dialog");
+
+    }
 
     private void initRecyclerView(){
         Log.d(TAG, "initRecyclerView: initRecyclerView");
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mNomeTask);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mTaskName);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     }
 
     private void sampleText(){
-        mNomeTask.add("Linea1");
-        mNomeTask.add("Linea2");
-        mNomeTask.add("Linea3");
-        mNomeTask.add("Linea4");
-        mNomeTask.add("Linea5");
-        mNomeTask.add("Linea6");
-        mNomeTask.add("Linea7");
-        mNomeTask.add("Linea8");
-        mNomeTask.add("Linea9");
-        mNomeTask.add("Linea10");
-        mNomeTask.add("Linea11");
-        mNomeTask.add("Linea12");
-        mNomeTask.add("Linea13");
-        mNomeTask.add("Linea14");
-        mNomeTask.add("Linea15");
-        mNomeTask.add("Linea16");
-        mNomeTask.add("Linea17");
-        mNomeTask.add("Linea18");
-        mNomeTask.add("Linea19");
-        mNomeTask.add("Linea20");
-        mNomeTask.add("Linea21");
-        mNomeTask.add("Linea22");
-        mNomeTask.add("Linea23");
-        mNomeTask.add("Linea24");
-        mNomeTask.add("Linea25");
-        mNomeTask.add("Linea26");
-        mNomeTask.add("Linea27");
-        mNomeTask.add("Linea28");
-        mNomeTask.add("Linea29");
-        mNomeTask.add("Linea30");
-        mNomeTask.add("Linea31");
-        mNomeTask.add("Linea32");
-        mNomeTask.add("Linea33");
-        mNomeTask.add("Linea34");
-        mNomeTask.add("Linea35");
-        mNomeTask.add("Linea36");
+        mTaskName.add("Linea1");
+        mTaskName.add("Linea2");
+        mTaskName.add("Linea3");
+        mTaskName.add("Linea4");
+        mTaskName.add("Linea5");
+        mTaskName.add("Linea6");
+        mTaskName.add("Linea7");
+        mTaskName.add("Linea8");
+        mTaskName.add("Linea9");
+        mTaskName.add("Linea10");
+        mTaskName.add("Linea11");
+        mTaskName.add("Linea12");
+        mTaskName.add("Linea13");
+        mTaskName.add("Linea14");
+        mTaskName.add("Linea15");
+        mTaskName.add("Linea16");
+        mTaskName.add("Linea17");
+        mTaskName.add("Linea18");
+        mTaskName.add("Linea19");
+        mTaskName.add("Linea20");
+        mTaskName.add("Linea21");
+        mTaskName.add("Linea22");
+        mTaskName.add("Linea23");
+        mTaskName.add("Linea24");
+        mTaskName.add("Linea25");
+        mTaskName.add("Linea26");
+        mTaskName.add("Linea27");
+        mTaskName.add("Linea28");
+        mTaskName.add("Linea29");
+        mTaskName.add("Linea30");
+        mTaskName.add("Linea31");
+        mTaskName.add("Linea32");
+        mTaskName.add("Linea33");
+        mTaskName.add("Linea34");
+        mTaskName.add("Linea35");
+        mTaskName.add("Linea36");
     }
-
 
 }

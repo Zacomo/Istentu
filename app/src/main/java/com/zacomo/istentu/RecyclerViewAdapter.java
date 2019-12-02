@@ -17,11 +17,11 @@ import java.util.ArrayList;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private static final String TAG = "RecyclerViewAdapter";
-    private ArrayList<String> mNomeTask = new ArrayList<String>();
+    private ArrayList<String> mTaskName = new ArrayList<String>();
     private Context mContext;
 
-    public RecyclerViewAdapter(Context context, ArrayList<String> nomeTask) {
-        this.mNomeTask = nomeTask;
+    public RecyclerViewAdapter(Context context, ArrayList<String> taskName) {
+        this.mTaskName = taskName;
         this.mContext = context;
     }
 
@@ -38,35 +38,33 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         Log.d(TAG, "onBindViewHolder: called");
 
-        holder.nomeTask.setText(mNomeTask.get(position));
+        holder.taskName.setText(mTaskName.get(position));
 
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: clicked on: " + mNomeTask.get(position));
+                Log.d(TAG, "onClick: clicked on: " + mTaskName.get(position));
 
-                Toast.makeText(mContext, mNomeTask.get(position), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, mTaskName.get(position), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mNomeTask.size();
+        return mTaskName.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        TextView nomeTask;
+        TextView taskName;
         LinearLayout parentLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            nomeTask = itemView.findViewById(R.id.nomeTask);
+            taskName = itemView.findViewById(R.id.taskName);
             parentLayout = itemView.findViewById(R.id.parentLayout);
-
-
 
         }
     }
