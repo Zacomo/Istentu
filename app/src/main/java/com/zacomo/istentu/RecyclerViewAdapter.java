@@ -48,6 +48,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 Toast.makeText(mContext, mTaskName.get(position), Toast.LENGTH_SHORT).show();
             }
         });
+        holder.parentLayout.setOnLongClickListener(new View.OnLongClickListener(){
+            @Override
+            public boolean onLongClick(View v){
+                Log.d(TAG, "onLongClick: clicked on: " + mTaskName.get(position));
+
+                Toast.makeText(mContext, "LOOONGPRESS", Toast.LENGTH_SHORT).show();
+
+                //true = il long click è gestito qui; false altrimenti
+                return true;
+            }
+        });
     }
 
     @Override

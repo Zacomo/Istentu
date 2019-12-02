@@ -12,7 +12,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, AddDialog.AddDialogListener {
 
     private static final String TAG = "MainActivity";
     private ArrayList<String> mTaskName = new ArrayList<>();
@@ -50,6 +50,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    @Override
+    public void insertData(String taskName) {
+        mTaskName.add(taskName);
+        //richiamo questo metodo per aggiornare la recyclerView
+        initRecyclerView();
+    }
+
     private void initRecyclerView(){
         Log.d(TAG, "initRecyclerView: initRecyclerView");
 
@@ -76,27 +83,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTaskName.add("Linea13");
         mTaskName.add("Linea14");
         mTaskName.add("Linea15");
-        mTaskName.add("Linea16");
-        mTaskName.add("Linea17");
-        mTaskName.add("Linea18");
-        mTaskName.add("Linea19");
-        mTaskName.add("Linea20");
-        mTaskName.add("Linea21");
-        mTaskName.add("Linea22");
-        mTaskName.add("Linea23");
-        mTaskName.add("Linea24");
-        mTaskName.add("Linea25");
-        mTaskName.add("Linea26");
-        mTaskName.add("Linea27");
-        mTaskName.add("Linea28");
-        mTaskName.add("Linea29");
-        mTaskName.add("Linea30");
-        mTaskName.add("Linea31");
-        mTaskName.add("Linea32");
-        mTaskName.add("Linea33");
-        mTaskName.add("Linea34");
-        mTaskName.add("Linea35");
-        mTaskName.add("Linea36");
     }
 
 }
