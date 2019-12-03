@@ -18,6 +18,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<String> mTaskName = new ArrayList<>();
     private FloatingActionButton addButton;
 
+    private RecyclerViewAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,8 +28,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         addButton = findViewById(R.id.fabAdd);
 
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        adapter = new RecyclerViewAdapter(this, mTaskName);
+
         sampleText();
-        initRecyclerView();
+
+        initRecyclerView(recyclerView, adapter);
 
         addButton.setOnClickListener(this);
 
@@ -54,14 +60,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void insertData(String taskName) {
         mTaskName.add(taskName);
         //richiamo questo metodo per aggiornare la recyclerView
-        initRecyclerView();
+        //initRecyclerView();
+        adapter.notifyItemInserted(mTaskName.indexOf(taskName));
     }
 
-    private void initRecyclerView(){
+    private void initRecyclerView(RecyclerView recyclerView, RecyclerViewAdapter adapter){
         Log.d(TAG, "initRecyclerView: initRecyclerView");
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mTaskName);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
