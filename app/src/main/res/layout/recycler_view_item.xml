@@ -3,7 +3,7 @@
     android:id="@+id/parentLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:padding="8dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -12,8 +12,21 @@
       android:id="@+id/taskName"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_gravity="center"
-      android:padding="5dp"
-      tools:text="@tools:sample/lorem" />
+      android:layout_gravity="start"
+      android:padding="8dp"
+      tools:text="Task: Fare la spesa" />
+
+  <TextView
+      android:id="@+id/taskPriority"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="end"
+      android:padding="8dp"
+      tools:text="Priorità: 5"/>
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="12/12/20"/>
+
 
 </LinearLayout>
