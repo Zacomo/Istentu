@@ -23,10 +23,21 @@
       android:layout_gravity="end"
       android:padding="8dp"
       tools:text="Priorità: 5"/>
+
   <TextView
+      android:id="@+id/taskDescription"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:text="Descrizione della Task proprio qua\nSono andato a capo!"/>
+
+  <TextView
+      android:id="@+id/taskDue"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="end"
       android:text="12/12/20"/>
+
+
 
 
 </LinearLayout>

@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import java.util.Calendar;
+
 public class AddDialog extends AppCompatDialogFragment {
 
     private EditText editTextInsertTaskName;
@@ -40,7 +42,9 @@ public class AddDialog extends AppCompatDialogFragment {
                     public void onClick(DialogInterface dialog, int i) {
                         //azioni da intraprendere quando si chiude la finestra di dialogo "con successo"
                         String taskName = editTextInsertTaskName.getText().toString();
-                        listener.insertData(taskName);
+
+                        //da modificare
+                        listener.insertData(taskName,null,1,null);
                     }
                 });
 
@@ -61,7 +65,7 @@ public class AddDialog extends AppCompatDialogFragment {
     }
 
     public interface AddDialogListener{
-        void insertData(String taskName);
+        void insertData(String taskName, String taskDescription, int taskPriority, Calendar taskDue);
     }
 
 }

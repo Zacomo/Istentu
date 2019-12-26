@@ -11,11 +11,12 @@ import android.view.View;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AddDialog.AddDialogListener {
 
     private static final String TAG = "MainActivity";
-    private ArrayList<String> mTaskName = new ArrayList<>();
+    private ArrayList<Task> mTasks = new ArrayList<>();
     private FloatingActionButton addButton;
 
     private RecyclerViewAdapter adapter;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addButton = findViewById(R.id.fabAdd);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        adapter = new RecyclerViewAdapter(this, mTaskName);
+        adapter = new RecyclerViewAdapter(this, mTasks);
 
         sampleText();
 
@@ -57,11 +58,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void insertData(String taskName) {
-        mTaskName.add(taskName);
+    public void insertData(String taskName, String taskDescription, int taskPriority, Calendar taskDue) {
+        Task newTask = new Task(taskName, taskDescription, taskPriority, taskDue);
+        mTasks.add(newTask); //richiamare costruttore con parametri task
         //richiamo questo metodo per aggiornare la recyclerView
         //initRecyclerView();
-        adapter.notifyItemInserted(mTaskName.indexOf(taskName));
+        adapter.notifyItemInserted(mTasks.indexOf(newTask));
     }
 
     private void initRecyclerView(RecyclerView recyclerView, RecyclerViewAdapter adapter){
@@ -73,21 +75,54 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void sampleText(){
-        mTaskName.add("Linea1");
-        mTaskName.add("Linea2");
-        mTaskName.add("Linea3");
-        mTaskName.add("Linea4");
-        mTaskName.add("Linea5");
-        mTaskName.add("Linea6");
-        mTaskName.add("Linea7");
-        mTaskName.add("Linea8");
-        mTaskName.add("Linea9");
-        mTaskName.add("Linea10");
-        mTaskName.add("Linea11");
-        mTaskName.add("Linea12");
-        mTaskName.add("Linea13");
-        mTaskName.add("Linea14");
-        mTaskName.add("Linea15");
+        Calendar dataProva = new Calendar() {
+            @Override
+            protected void computeTime() {
+
+            }
+
+            @Override
+            protected void computeFields() {
+
+            }
+
+            @Override
+            public void add(int field, int amount) {
+
+            }
+
+            @Override
+            public void roll(int field, boolean up) {
+
+            }
+
+            @Override
+            public int getMinimum(int field) {
+                return 0;
+            }
+
+            @Override
+            public int getMaximum(int field) {
+                return 0;
+            }
+
+            @Override
+            public int getGreatestMinimum(int field) {
+                return 0;
+            }
+
+            @Override
+            public int getLeastMaximum(int field) {
+                return 0;
+            }
+        };
+        dataProva.set(2020,5,17,12,0);
+
+        mTasks.add(new Task("Fare la spesa", "- Latte\n- Uova\n- Biscotti",3, dataProva));
+        mTasks.add(new Task("Comprare Libro", "- Origin Dan Brown",3, dataProva));
+        mTasks.add(new Task("Studiare Algoritmi", "- Strutture Dati \n- Algoritmi",3, dataProva));
+        mTasks.add(new Task("Tirare barduffula", "- Stringere forte il filo e lanciare",3, dataProva));
+        mTasks.add(new Task("Affitto", "- Pagare mese di Gennaio",3, dataProva));
     }
 
 }

@@ -17,7 +17,7 @@ public class Task {
         if (taskPriority > 0 && taskPriority < 6)
             this.taskPriority = taskPriority;
         else
-            this.taskPriority = 1;
+            this.taskPriority = 0;
 
         //La data non può essere precedente ad oggi
         if (taskDue.before(Calendar.getInstance().getTime()))
@@ -46,6 +46,8 @@ public class Task {
             this.taskPriority = taskPriority;
             done = true;
         }
+        else
+            this.taskPriority = 0;
         return done;
     }
 
