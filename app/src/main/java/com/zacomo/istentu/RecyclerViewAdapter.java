@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
@@ -40,8 +41,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.taskDescription.setText(mTasks.get(position).getTaskDescription());
         holder.taskPriority.setText(Integer.toString(mTasks.get(position).getTaskPriority()));
 
-        //per ora ho messo toString ma potrei voler cambiare il formato della data
-        holder.taskDue.setText(mTasks.get(position).getTaskDue().getTime().toString());
+        // data nel formato dd/M/yyyy
+        String mTaskDue =   mTasks.get(position).getTaskDue().get(Calendar.DATE) + "/"+
+                            mTasks.get(position).getTaskDue().get(Calendar.MONTH) + "/" +
+                            mTasks.get(position).getTaskDue().get(Calendar.YEAR);
+
+        holder.taskDue.setText(mTaskDue);
 
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override

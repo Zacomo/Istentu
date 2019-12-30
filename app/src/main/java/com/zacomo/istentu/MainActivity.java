@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return 0;
             }
         };
-        dataProva.set(2020,5,17,12,0);
+        dataProva.set(2020,5,17,12,0, 0);
 
         mTasks.add(new Task("Fare la spesa", "- Latte\n- Uova\n- Biscotti",3, dataProva));
         mTasks.add(new Task("Comprare Libro", "- Origin Dan Brown",3, dataProva));
