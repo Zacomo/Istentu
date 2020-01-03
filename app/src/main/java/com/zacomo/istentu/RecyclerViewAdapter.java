@@ -62,7 +62,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 Log.d(TAG, "onLongClick: clicked on: " + mTasks.get(position));
 
                 Toast.makeText(mContext, "LOOONGPRESS", Toast.LENGTH_SHORT).show();
-
+                //ToDO: implementare eliminazione task con dialog di conferma
                 //true = il long click è gestito qui; false altrimenti
                 return true;
             }
