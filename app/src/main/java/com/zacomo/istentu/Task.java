@@ -20,7 +20,7 @@ public class Task {
             this.taskPriority = 0;
 
         //La data non può essere precedente ad oggi o nulla; se succede, viene impostata la data odierna
-        if (taskDue == null || taskDue.before(Calendar.getInstance().getTime()))
+        if (taskDue == null || taskDue.getTime().before(Calendar.getInstance().getTime()))
             this.taskDue = Calendar.getInstance();
         else
             this.taskDue = taskDue;

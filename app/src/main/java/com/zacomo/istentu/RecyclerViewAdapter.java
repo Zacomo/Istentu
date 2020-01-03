@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -42,10 +43,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.taskPriority.setText(Integer.toString(mTasks.get(position).getTaskPriority()));
 
         // data nel formato dd/M/yyyy
-        String mTaskDue =   mTasks.get(position).getTaskDue().get(Calendar.DATE) + "/"+
-                            mTasks.get(position).getTaskDue().get(Calendar.MONTH) + "/" +
-                            mTasks.get(position).getTaskDue().get(Calendar.YEAR);
-
+        String mTaskDue = DateFormat.getDateInstance(DateFormat.FULL).format(mTasks.get(position).getTaskDue().getTime());
         holder.taskDue.setText(mTaskDue);
 
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {

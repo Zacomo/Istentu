@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private RecyclerViewAdapter adapter;
 
-    //ToDo: implementare DatePicker
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,8 +28,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d(TAG, "OnCreate: started");
 
         addButton = findViewById(R.id.fabAdd);
-
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
+
         adapter = new RecyclerViewAdapter(this, mTasks);
 
         sampleText();
@@ -58,12 +57,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    //metodo che con i valori del dialog crea un nuovo task e lo inserisce nel vettore
     @Override
     public void insertData(String taskName, String taskDescription, int taskPriority, Calendar taskDue) {
         Task newTask = new Task(taskName, taskDescription, taskPriority, taskDue);
-        mTasks.add(newTask); //richiamare costruttore con parametri task
-        //richiamo questo metodo per aggiornare la recyclerView
-        //initRecyclerView();
+        mTasks.add(newTask);
+
+        //aggiorno la recyclerView
         adapter.notifyItemInserted(mTasks.indexOf(newTask));
     }
 

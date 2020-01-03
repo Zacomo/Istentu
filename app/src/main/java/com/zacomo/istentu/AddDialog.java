@@ -1,26 +1,34 @@
 package com.zacomo.istentu;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.Calendar;
 
-public class AddDialog extends AppCompatDialogFragment{
+public class AddDialog extends AppCompatDialogFragment implements DatePickerDialog.OnDateSetListener {
 
     private EditText editTextInsertTaskName;
     private Spinner spinnerInsertPriority;
     private EditText editTextInsertTaskDescription;
+    private TextView textViewDate;
+
+    private Calendar taskDue;
 
     private AddDialogListener listener;
 
@@ -49,13 +57,25 @@ public class AddDialog extends AppCompatDialogFragment{
                                 editTextInsertTaskName.getText().toString(),
                                 editTextInsertTaskDescription.getText().toString(),
                                 spinnerInsertPriority.getSelectedItemPosition() + 1,
-                                null);
+                                taskDue);
                     }
                 });
+
+        FloatingActionButton fabDatePicker = view.findViewById(R.id.fabDatePicker);
 
         editTextInsertTaskName = view.findViewById(R.id.insertTaskName);
         spinnerInsertPriority = view.findViewById(R.id.insertTaskPriority);
         editTextInsertTaskDescription = view.findViewById(R.id.insertTaskDescription);
+        textViewDate = view.findViewById(R.id.textViewDate);
+
+        taskDue = Calendar.getInstance();
+
+        fabDatePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog();
+            }
+        });
 
         return builder.create();
     }
@@ -73,6 +93,28 @@ public class AddDialog extends AppCompatDialogFragment{
 
     public interface AddDialogListener{
         void insertData(String taskName, String taskDescription, int taskPriority, Calendar taskDue);
+    }
+
+    private void showDatePickerDialog(){
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                getContext(),
+                this,
+                Calendar.getInstance().get(Calendar.YEAR),
+                Calendar.getInstance().get(Calendar.MONTH),
+                Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+        );
+        datePickerDialog.show();
+    }
+
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+        taskDue.set(year,month,dayOfMonth);
+
+        //month incrementato di uno perchè il conteggio inizia da 0 (Gen == 0)
+        String data = year + "/" + ++month + "/" + dayOfMonth;
+        textViewDate.setText(data);
     }
 
 }
