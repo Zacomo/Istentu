@@ -40,7 +40,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         holder.taskName.setText(mTasks.get(position).getTaskName());
         holder.taskDescription.setText(mTasks.get(position).getTaskDescription());
-        holder.taskPriority.setText(Integer.toString(mTasks.get(position).getTaskPriority()));
+        holder.taskPriority.setText("Priorità: " + mTasks.get(position).getTaskPriority());
 
         // data nel formato dd/M/yyyy
         String mTaskDue = DateFormat.getDateInstance(DateFormat.FULL).format(mTasks.get(position).getTaskDue().getTime());
