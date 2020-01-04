@@ -1,6 +1,8 @@
 package com.zacomo.istentu;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +12,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import androidx.fragment.app.Fragment;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
@@ -54,13 +60,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 Toast.makeText(mContext, mTasks.get(position).getTaskName(), Toast.LENGTH_SHORT).show();
             }
         });
-        holder.parentLayout.setOnLongClickListener(new View.OnLongClickListener(){
+        holder.parentLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onLongClick(View v){
-                Log.d(TAG, "onLongClick: clicked on: " + mTasks.get(position));
+            public boolean onLongClick(View v) {
+                //Metodo per rimozione task
+                removeDialog(position);
 
-                Toast.makeText(mContext, "LOOONGPRESS", Toast.LENGTH_SHORT).show();
-                //ToDO: implementare eliminazione task con dialog di conferma
                 //true = il long click è gestito qui; false altrimenti
                 return true;
             }
@@ -72,7 +77,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return mTasks.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView taskName;
         TextView taskDescription;
@@ -90,5 +95,33 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             parentLayout = itemView.findViewById(R.id.parentLayout);
 
         }
+    }
+
+    private void removeDialog(final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle("Eliminazione Task");
+        builder.setMessage("Sei sicuro di voler eliminare l'impegno selezionato?");
+        builder.setCancelable(false);
+
+        builder.setPositiveButton("Sì", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(mContext, "Hai premuto Sì", Toast.LENGTH_SHORT).show();
+                mTasks.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, getItemCount());
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+
     }
 }
