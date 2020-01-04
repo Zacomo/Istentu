@@ -15,6 +15,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,17 +28,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private RecyclerViewAdapter adapter;
 
+    private FileHelper fileHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(TAG, "OnCreate: started");
 
-        readData();
+        fileHelper = new FileHelper(this);
+
+        mTasks = fileHelper.readData();
+        //readData();
         addButton = findViewById(R.id.fabAdd);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
 
-        adapter = new RecyclerViewAdapter(this, mTasks);
+        adapter = new RecyclerViewAdapter(this, mTasks, fileHelper);
 
         //sampleText();
 
@@ -63,28 +69,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addDialog.show(getSupportFragmentManager(), "Add dialog");
 
     }
-
-    private void writeData(){
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(mTasks);
-        editor.putString("TaskList", json);
-        editor.apply();
-    }
-
-    private void readData(){
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("TaskList", null);
-        Type type = new TypeToken<ArrayList<Task>>() {}.getType();
-        mTasks = gson.fromJson(json, type);
-
-        if (mTasks == null){
-            mTasks = new ArrayList<>();
-        }
-    }
-
     //metodo che con i valori del dialog crea un nuovo task e lo inserisce nel vettore
     @Override
     public void insertData(String taskName, String taskDescription, int taskPriority, Calendar taskDue) {
@@ -92,7 +76,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTasks.add(newTask);
 
         //aggiorno la recyclerView
-        writeData();
+        fileHelper.writeData(mTasks);
+        //writeData();
         adapter.notifyItemInserted(mTasks.indexOf(newTask));
         Toast.makeText(this, "Task added!", Toast.LENGTH_SHORT).show();
     }

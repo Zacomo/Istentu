@@ -28,9 +28,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<Task> mTasks;
     private Context mContext;
 
-    public RecyclerViewAdapter(Context context, ArrayList<Task> tasks) {
+    private FileHelper fileHelper;
+
+    public RecyclerViewAdapter(Context context, ArrayList<Task> tasks, FileHelper fileHelper) {
         this.mTasks = tasks;
         this.mContext = context;
+        this.fileHelper = fileHelper;
     }
 
     @NonNull
@@ -108,6 +111,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             public void onClick(DialogInterface dialog, int which) {
                 Toast.makeText(mContext, "Hai premuto Sì", Toast.LENGTH_SHORT).show();
                 mTasks.remove(position);
+
+                fileHelper.writeData(mTasks);
+
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, getItemCount());
             }
