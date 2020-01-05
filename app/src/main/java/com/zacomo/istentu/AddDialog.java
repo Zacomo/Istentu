@@ -34,34 +34,20 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
 
     private AddDialogListener listener;
 
+    private Bundle bundle;
+
+    private String dialogTitle;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+
+        dialogTitle = "Nuovo Task";
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.layout_add_btn_dialog, null);
-
-        builder.setView(view)
-                .setTitle("Nuova attività") //titolo finestra di dialogo
-                .setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int i) {
-                        //azioni da intraprendere quando si chiude la finestra di dialogo "senza successo"
-                    }
-                })
-                .setPositiveButton("Fatto", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int i) {
-                        //azioni da intraprendere quando si chiude la finestra di dialogo "con successo"
-                        listener.insertData(
-                                editTextInsertTaskName.getText().toString(),
-                                editTextInsertTaskDescription.getText().toString(),
-                                spinnerInsertPriority.getSelectedItemPosition() + 1,
-                                taskDue, spinnerInsertClass.getSelectedItem().toString());
-                    }
-                });
 
         FloatingActionButton fabDatePicker = view.findViewById(R.id.fabDatePicker);
 
@@ -78,10 +64,11 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
         spinnerClasses.add("Lavoro");
         spinnerClasses.add("Studio");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, spinnerClasses);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> spinnerClassesAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, spinnerClasses);
+        spinnerClassesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        spinnerInsertClass.setAdapter(adapter);
+        spinnerInsertClass.setAdapter(spinnerClassesAdapter);
+
 
         fabDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +76,31 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
                 showDatePickerDialog();
             }
         });
+
+        if (bundle != null){
+            editTask(bundle, spinnerClassesAdapter);
+        }
+
+        builder.setView(view)
+                .setTitle(dialogTitle) //titolo finestra di dialogo
+                .setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        //azioni da intraprendere quando si chiude la finestra di dialogo "senza successo"
+                    }
+                })
+                .setPositiveButton("Fatto", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        //azioni da intraprendere quando si chiude la finestra di dialogo "con successo"
+                        Task newTask = new Task(editTextInsertTaskName.getText().toString(),
+                                editTextInsertTaskDescription.getText().toString(),
+                                spinnerInsertPriority.getSelectedItemPosition() + 1,
+                                taskDue, spinnerInsertClass.getSelectedItem().toString());
+
+                        listener.insertData(newTask);
+                    }
+                });
 
         return builder.create();
     }
@@ -105,7 +117,7 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
     }
 
     public interface AddDialogListener{
-        void insertData(String taskName, String taskDescription, int taskPriority, Calendar taskDue, String taskClass);
+        void insertData(Task newTask);
     }
 
     private void showDatePickerDialog(){
@@ -128,6 +140,33 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
         //month incrementato di uno perchè il conteggio inizia da 0 (Gen == 0)
         String data = year + "/" + ++month + "/" + dayOfMonth;
         textViewDate.setText(data);
+    }
+
+    //metodo da richiamare quando si vuole modificare un task
+    public void editTask(Bundle savedInstanceState, ArrayAdapter<String> spinnerClassAdapter){
+        dialogTitle = "Modifica " + "\"" + savedInstanceState.getString("taskName") + "\"";
+        editTextInsertTaskName.setText(savedInstanceState.getString("taskName"));
+
+        //-1 perchè priorità va da 1 a 5
+        spinnerInsertPriority.setSelection(savedInstanceState.getInt("taskPriority")-1);
+
+        // con priority funziona perchè uso numeri spinnerInsertClass;
+        spinnerClassAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerInsertClass.setAdapter(spinnerClassAdapter);
+        if (savedInstanceState.getString("taskClass") != null){
+            spinnerInsertClass.setSelection(spinnerClassAdapter.getPosition(savedInstanceState.getString("taskClass")));
+        }
+
+        editTextInsertTaskDescription.setText(savedInstanceState.getString("taskDescription"));
+        textViewDate.setText(savedInstanceState.getString("taskDue"));
+    }
+
+    public void setBundle(Bundle bundle){
+        this.bundle = bundle;
+    }
+
+    public Bundle getBundle(){
+        return this.bundle;
     }
 
 }

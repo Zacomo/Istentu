@@ -10,8 +10,9 @@ public class Task {
     private int taskPriority;
     private Calendar taskDue;
     private String taskClass;
+    private int taskPosition;
 
-    public Task(String taskName, String taskDescription, int taskPriority, Calendar taskDue, String taskClass){
+    public Task(String taskName, String taskDescription, int taskPriority, Calendar taskDue, String taskClass) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.taskClass = taskClass;
@@ -26,29 +27,30 @@ public class Task {
             this.taskDue = Calendar.getInstance();
         else
             this.taskDue = taskDue;
+
+        taskPosition = -1;
     }
 
-    public String getTaskName(){
+    public String getTaskName() {
         return taskName;
     }
 
-    public int getTaskPriority(){
+    public int getTaskPriority() {
         return taskPriority;
     }
 
-    public void setTaskName(String taskName){
+    public void setTaskName(String taskName) {
         this.taskName = taskName;
     }
 
-    public boolean setTaskPriority(int taskPriority){
+    public boolean setTaskPriority(int taskPriority) {
 
         boolean done = false;
 
-        if (taskPriority > 0 && taskPriority < 6){
+        if (taskPriority > 0 && taskPriority < 6) {
             this.taskPriority = taskPriority;
             done = true;
-        }
-        else
+        } else
             this.taskPriority = 0;
         return done;
     }
@@ -73,12 +75,20 @@ public class Task {
             this.taskDue = taskDue;
     }
 
-    public String getTaskClass(){
+    public String getTaskClass() {
         return taskClass;
     }
 
-    public void setTaskClass(String taskClass){
+    public void setTaskClass(String taskClass) {
         this.taskClass = taskClass;
     }
 
+
+    public int getTaskPosition() {
+        return taskPosition;
+    }
+
+    public void setTaskPosition(int position){
+        taskPosition = position;
+    }
 }

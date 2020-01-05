@@ -4,19 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
+
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.io.File;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -42,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addButton = findViewById(R.id.fabAdd);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
 
-        adapter = new RecyclerViewAdapter(this, mTasks, fileHelper);
+        adapter = new RecyclerViewAdapter(this, mTasks, fileHelper, MainActivity.this);
 
         //sampleText();
 
@@ -68,11 +63,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addDialog.show(getSupportFragmentManager(), "Add dialog");
 
     }
-    //metodo che con i valori del dialog crea un nuovo task e lo inserisce nel vettore
+
+    //metodo che inserisce nel vettore il task (nuovo o modificato che sia)
     @Override
-    public void insertData(String taskName, String taskDescription, int taskPriority, Calendar taskDue, String taskClass) {
-        Task newTask = new Task(taskName, taskDescription, taskPriority, taskDue, taskClass);
-        mTasks.add(newTask);
+    public void insertData(Task newTask) {
+
+        if (newTask.getTaskPosition() != -1){
+            // se è già presente, significa che potrebbe essere stato modificato
+
+            //rimuovo il task precedente
+            mTasks.remove(newTask.getTaskPosition());
+
+            //aggiorno la posizione del task modificato che sarà size()
+            newTask.setTaskPosition(mTasks.size());
+
+            //aggiungo il task
+            mTasks.add(newTask);
+        }
+        else{
+            //se ho un nuovo task
+
+            //aggiorno la posizione del nuovo task, pari a size perchè aggiunto in fondo
+            newTask.setTaskPosition(mTasks.size());
+
+            mTasks.add(newTask);
+        }
 
         //aggiorno la recyclerView
         fileHelper.writeData(mTasks);
@@ -86,6 +101,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+    }
+
+    public void modifyDialog(final int position){
+
+        //ToDo: si potrebbe sostituire tutto con una stringa Json
+
+        Bundle savedInstanceState = new Bundle();
+        savedInstanceState.putString("taskName", mTasks.get(position).getTaskName());
+        savedInstanceState.putString("taskDescription", mTasks.get(position).getTaskDescription());
+        savedInstanceState.putInt("taskPriority", mTasks.get(position).getTaskPriority());
+        savedInstanceState.putString("taskClass", mTasks.get(position).getTaskClass());
+
+        int month = mTasks.get(position).getTaskDue().getInstance().get(Calendar.MONTH);
+        month++;
+        String date = mTasks.get(position).getTaskDue().getInstance().get(Calendar.YEAR) + "/" + month
+                    + "/" + mTasks.get(position).getTaskDue().getInstance().get(Calendar.DAY_OF_MONTH);
+
+        savedInstanceState.putString("taskDue", date);
+        AddDialog addDialog = new AddDialog();
+        addDialog.setBundle(savedInstanceState);
+        addDialog.show(getSupportFragmentManager(), "Modify dialog");
     }
 
     private void sampleText(){

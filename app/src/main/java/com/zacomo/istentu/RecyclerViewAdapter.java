@@ -27,13 +27,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private static final String TAG = "RecyclerViewAdapter";
     private ArrayList<Task> mTasks;
     private Context mContext;
+    private MainActivity mainActivity;
 
     private FileHelper fileHelper;
 
-    public RecyclerViewAdapter(Context context, ArrayList<Task> tasks, FileHelper fileHelper) {
+    public RecyclerViewAdapter(Context context, ArrayList<Task> tasks, FileHelper fileHelper, MainActivity mainActivity) {
         this.mTasks = tasks;
         this.mContext = context;
         this.fileHelper = fileHelper;
+        this.mainActivity = mainActivity;
     }
 
     @NonNull
@@ -60,9 +62,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: clicked on: " + mTasks.get(position));
-                Toast.makeText(mContext, mTasks.get(position).getTaskName(), Toast.LENGTH_SHORT).show();
-
-                modifyDialog(position);
+                //Toast.makeText(mContext, mTasks.get(position).getTaskPosition() + "||" + position, Toast.LENGTH_SHORT).show();
+                mainActivity.modifyDialog(position);
 
             }
         });
@@ -108,19 +109,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private void removeDialog(final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle("Eliminazione Task");
-        builder.setMessage("Sei sicuro di voler eliminare l'impegno selezionato?");
+        builder.setMessage("Sei sicuro di voler eliminare " + "\"" + mTasks.get(position).getTaskName() + "\"");
         builder.setCancelable(false);
 
         builder.setPositiveButton("Sì", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(mContext, "Hai premuto Sì", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Fatto!", Toast.LENGTH_SHORT).show();
                 mTasks.remove(position);
-
-                fileHelper.writeData(mTasks);
 
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, getItemCount());
+
+                //devo aggiornare le posizioni dei task successivi a quello rimosso
+                for (int i = position; i < mTasks.size(); i++)
+                    mTasks.get(i).setTaskPosition(i);
+
+                fileHelper.writeData(mTasks);
             }
         });
 
@@ -132,10 +137,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         });
         AlertDialog alert = builder.create();
         alert.show();
-
-    }
-
-    private void modifyDialog(final int position){
 
     }
 }
