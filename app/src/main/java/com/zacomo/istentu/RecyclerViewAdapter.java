@@ -49,6 +49,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         holder.taskName.setText(mTasks.get(position).getTaskName());
         holder.taskDescription.setText(mTasks.get(position).getTaskDescription());
+        holder.taskClass.setText(mTasks.get(position).getTaskClass());
         holder.taskPriority.setText("Priorità: " + mTasks.get(position).getTaskPriority());
 
         // data nel formato dd/M/yyyy
@@ -59,8 +60,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: clicked on: " + mTasks.get(position));
-
                 Toast.makeText(mContext, mTasks.get(position).getTaskName(), Toast.LENGTH_SHORT).show();
+
+                modifyDialog(position);
+
             }
         });
         holder.parentLayout.setOnLongClickListener(new View.OnLongClickListener() {
@@ -84,6 +87,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         TextView taskName;
         TextView taskDescription;
+        TextView taskClass;
         TextView taskPriority;
         TextView taskDue;
         LinearLayout parentLayout;
@@ -93,6 +97,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             taskName = itemView.findViewById(R.id.taskName);
             taskDescription = itemView.findViewById(R.id.taskDescription);
+            taskClass = itemView.findViewById(R.id.taskClass);
             taskPriority = itemView.findViewById(R.id.taskPriority);
             taskDue = itemView.findViewById(R.id.taskDue);
             parentLayout = itemView.findViewById(R.id.parentLayout);
@@ -125,9 +130,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 dialog.cancel();
             }
         });
-
         AlertDialog alert = builder.create();
         alert.show();
+
+    }
+
+    private void modifyDialog(final int position){
 
     }
 }

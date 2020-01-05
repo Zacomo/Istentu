@@ -15,6 +15,12 @@
       android:layout_gravity="start"
       android:padding="8dp"
       tools:text="Task: Fare la spesa" />
+  <TextView
+      android:id="@+id/taskClass"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:padding="8dp"
+      tools:text="Classe: Lavoro"/>
 
   <TextView
       android:id="@+id/taskPriority"
@@ -28,7 +34,7 @@
       android:id="@+id/taskDescription"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="Descrizione della Task proprio qua\nSono andato a capo!"/>
+      android:text="Descrizione Task"/>
 
   <TextView
       android:id="@+id/taskDue"

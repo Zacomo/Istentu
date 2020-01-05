@@ -38,17 +38,37 @@
         android:id="@+id/insertTaskPriority"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="8dp"
+        android:entries="@array/priority_values"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/insertTaskName" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/insertTaskName"
-        android:entries="@array/priority_values"/>
+        android:text="Categoria: "
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <Spinner
+        android:id="@+id/insertTaskClass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="110dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/insertTaskPriority" />
+
     <TextView
         android:id="@+id/textViewDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="16dp"
         android:text="Scegli una data"
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/fabDatePicker"
@@ -58,8 +78,8 @@
         android:id="@+id/fabDatePicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="72dp"
+        android:layout_marginEnd="4dp"
         android:src="@drawable/ic_date_range_black_24dp"
         app:backgroundTint="@color/colorPrimary"
         app:fabSize="mini"
@@ -71,12 +91,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="92dp"
         android:hint="Inserisci una descrizione"
         android:inputType="textMultiLine"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

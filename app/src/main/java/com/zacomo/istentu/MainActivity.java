@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fileHelper = new FileHelper(this);
 
         mTasks = fileHelper.readData();
-        //readData();
         addButton = findViewById(R.id.fabAdd);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
 
@@ -71,13 +70,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     //metodo che con i valori del dialog crea un nuovo task e lo inserisce nel vettore
     @Override
-    public void insertData(String taskName, String taskDescription, int taskPriority, Calendar taskDue) {
-        Task newTask = new Task(taskName, taskDescription, taskPriority, taskDue);
+    public void insertData(String taskName, String taskDescription, int taskPriority, Calendar taskDue, String taskClass) {
+        Task newTask = new Task(taskName, taskDescription, taskPriority, taskDue, taskClass);
         mTasks.add(newTask);
 
         //aggiorno la recyclerView
         fileHelper.writeData(mTasks);
-        //writeData();
         adapter.notifyItemInserted(mTasks.indexOf(newTask));
         Toast.makeText(this, "Task added!", Toast.LENGTH_SHORT).show();
     }
@@ -134,11 +132,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         };
         dataProva.set(2020,5,17,12,0, 0);
 
-        mTasks.add(new Task("Fare la spesa", "- Latte\n- Uova\n- Biscotti",3, dataProva));
-        mTasks.add(new Task("Comprare Libro", "- Origin Dan Brown",3, dataProva));
-        mTasks.add(new Task("Studiare Algoritmi", "- Strutture Dati \n- Algoritmi",3, dataProva));
-        mTasks.add(new Task("Tirare barduffula", "- Stringere forte il filo e lanciare",3, dataProva));
-        mTasks.add(new Task("Affitto", "- Pagare mese di Gennaio",3, dataProva));
+        mTasks.add(new Task("Fare la spesa", "- Latte\n- Uova\n- Biscotti",3, dataProva, "Categoria A"));
+        mTasks.add(new Task("Comprare Libro", "- Origin Dan Brown",3, dataProva, "Categoria B"));
+        mTasks.add(new Task("Studiare Algoritmi", "- Strutture Dati \n- Algoritmi",3, dataProva, "Categoria B"));
+        mTasks.add(new Task("Tirare barduffula", "- Stringere forte il filo e lanciare",3, dataProva, "Categoria A"));
+        mTasks.add(new Task("Affitto", "- Pagare mese di Gennaio",3, dataProva, "Categoria A"));
     }
 
 }

@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -19,12 +20,13 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class AddDialog extends AppCompatDialogFragment implements DatePickerDialog.OnDateSetListener {
 
     private EditText editTextInsertTaskName;
-    private Spinner spinnerInsertPriority;
+    private Spinner spinnerInsertPriority, spinnerInsertClass;
     private EditText editTextInsertTaskDescription;
     private TextView textViewDate;
 
@@ -57,7 +59,7 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
                                 editTextInsertTaskName.getText().toString(),
                                 editTextInsertTaskDescription.getText().toString(),
                                 spinnerInsertPriority.getSelectedItemPosition() + 1,
-                                taskDue);
+                                taskDue, spinnerInsertClass.getSelectedItem().toString());
                     }
                 });
 
@@ -65,10 +67,21 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
 
         editTextInsertTaskName = view.findViewById(R.id.insertTaskName);
         spinnerInsertPriority = view.findViewById(R.id.insertTaskPriority);
+        spinnerInsertClass = view.findViewById(R.id.insertTaskClass);
         editTextInsertTaskDescription = view.findViewById(R.id.insertTaskDescription);
         textViewDate = view.findViewById(R.id.textViewDate);
 
         taskDue = Calendar.getInstance();
+
+        ArrayList<String> spinnerClasses = new ArrayList<>();
+        spinnerClasses.add("Casa");
+        spinnerClasses.add("Lavoro");
+        spinnerClasses.add("Studio");
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, spinnerClasses);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinnerInsertClass.setAdapter(adapter);
 
         fabDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,7 +105,7 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
     }
 
     public interface AddDialogListener{
-        void insertData(String taskName, String taskDescription, int taskPriority, Calendar taskDue);
+        void insertData(String taskName, String taskDescription, int taskPriority, Calendar taskDue, String taskClass);
     }
 
     private void showDatePickerDialog(){
