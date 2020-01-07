@@ -40,7 +40,7 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    public Dialog onCreateDialog(@Nullable final Bundle savedInstanceState) {
 
         dialogTitle = "Nuovo Task";
 
@@ -97,6 +97,9 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
                                 editTextInsertTaskDescription.getText().toString(),
                                 spinnerInsertPriority.getSelectedItemPosition() + 1,
                                 taskDue, spinnerInsertClass.getSelectedItem().toString());
+
+                        if (bundle != null)
+                            newTask.setTaskPosition(bundle.getInt("taskPosition"));
 
                         listener.insertData(newTask);
                     }

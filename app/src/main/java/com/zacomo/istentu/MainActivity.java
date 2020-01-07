@@ -74,11 +74,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //rimuovo il task precedente
             mTasks.remove(newTask.getTaskPosition());
 
+            adapter.notifyItemRemoved(newTask.getTaskPosition());
+
+            Toast.makeText(this, String.valueOf(newTask.getTaskPosition()), Toast.LENGTH_SHORT).show();
             //aggiorno la posizione del task modificato che sarà size()
-            newTask.setTaskPosition(mTasks.size());
+            //newTask.setTaskPosition(mTasks.size());
 
             //aggiungo il task
-            mTasks.add(newTask);
+            mTasks.add(newTask.getTaskPosition(), newTask);
         }
         else{
             //se ho un nuovo task
@@ -92,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //aggiorno la recyclerView
         fileHelper.writeData(mTasks);
         adapter.notifyItemInserted(mTasks.indexOf(newTask));
-        Toast.makeText(this, "Task added!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Done!", Toast.LENGTH_SHORT).show();
     }
 
     private void initRecyclerView(RecyclerView recyclerView, RecyclerViewAdapter adapter){
@@ -119,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     + "/" + mTasks.get(position).getTaskDue().getInstance().get(Calendar.DAY_OF_MONTH);
 
         savedInstanceState.putString("taskDue", date);
+        savedInstanceState.putInt("taskPosition", position);
         AddDialog addDialog = new AddDialog();
         addDialog.setBundle(savedInstanceState);
         addDialog.show(getSupportFragmentManager(), "Modify dialog");
