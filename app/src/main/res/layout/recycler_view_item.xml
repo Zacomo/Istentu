@@ -6,14 +6,24 @@
     android:orientation="vertical"
     android:padding="8dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="#fff">
 
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:layout_marginStart="8dp"
+      android:layout_marginLeft="8dp"
+      android:background="@drawable/card_bg">
   <TextView
       android:id="@+id/taskName"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="start"
       android:padding="8dp"
+      android:textStyle="bold"
+      android:textColor="@color/title_text"
       tools:text="Task: Fare la spesa" />
   <TextView
       android:id="@+id/taskClass"
@@ -34,6 +44,7 @@
       android:id="@+id/taskDescription"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:padding="8dp"
       android:text="Descrizione Task"/>
 
   <TextView
@@ -41,9 +52,11 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="end"
+      android:paddingRight="8dp"
+      android:paddingBottom="8dp"
       android:text="12/12/20"/>
 
 
-
+  </LinearLayout>
 
 </LinearLayout>
