@@ -8,6 +8,17 @@
         <item> 5 </item>
     </string-array>
 
+    <string-array name="sort_types">
+        <item>Priorità</item>
+        <item>Data</item>
+        <item>Nome</item>
+    </string-array>
+
+    <string-array name="sort_order">
+        <item>Ascendente</item>
+        <item>Discendente</item>
+    </string-array>
+
     <string name="drawerOpen">drawerOpen</string>
     <string name="drawerClose">drawerClose</string>
 

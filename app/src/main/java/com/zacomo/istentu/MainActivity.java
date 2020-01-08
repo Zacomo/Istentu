@@ -8,6 +8,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -24,7 +26,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, AddDialog.AddDialogListener, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, AddDialog.AddDialogListener, NavigationView.OnNavigationItemSelectedListener, SortDialog.SortDialogListener {
 
     private static final String TAG = "MainActivity";
     private ArrayList<Task> mTasks;
@@ -54,8 +56,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
 
         adapter = new RecyclerViewAdapter(this, mTasks, fileHelper, MainActivity.this);
-
-        //sampleText();
 
         drawerLayout = findViewById(R.id.drawerLayout);
         toolbar = findViewById(R.id.toolbar);
@@ -157,63 +157,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addDialog.show(getSupportFragmentManager(), "Modify dialog");
     }
 
-    private void sampleText(){
-        Calendar dataProva = new Calendar() {
-            @Override
-            protected void computeTime() {
-
-            }
-
-            @Override
-            protected void computeFields() {
-
-            }
-
-            @Override
-            public void add(int field, int amount) {
-
-            }
-
-            @Override
-            public void roll(int field, boolean up) {
-
-            }
-
-            @Override
-            public int getMinimum(int field) {
-                return 0;
-            }
-
-            @Override
-            public int getMaximum(int field) {
-                return 0;
-            }
-
-            @Override
-            public int getGreatestMinimum(int field) {
-                return 0;
-            }
-
-            @Override
-            public int getLeastMaximum(int field) {
-                return 0;
-            }
-        };
-        dataProva.set(2020,5,17,12,0, 0);
-
-        mTasks.add(new Task("Fare la spesa", "- Latte\n- Uova\n- Biscotti",3, dataProva, "Categoria A"));
-        mTasks.add(new Task("Comprare Libro", "- Origin Dan Brown",3, dataProva, "Categoria B"));
-        mTasks.add(new Task("Studiare Algoritmi", "- Strutture Dati \n- Algoritmi",3, dataProva, "Categoria B"));
-        mTasks.add(new Task("Tirare barduffula", "- Stringere forte il filo e lanciare",3, dataProva, "Categoria A"));
-        mTasks.add(new Task("Affitto", "- Pagare mese di Gennaio",3, dataProva, "Categoria A"));
-    }
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()){
             case R.id.sort:
                 Toast.makeText(this, "Sort Selected!", Toast.LENGTH_SHORT).show();
-                //sortByPriority(false);
+                openSortDialog();
                 break;
             case R.id.addClass:
                 Toast.makeText(this, "Add Class Selected!", Toast.LENGTH_SHORT).show();
@@ -230,17 +179,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return false;
     }
 
-    private void sortByPriority(boolean ascendent) {
+    private void openSortDialog(){
+        SortDialog sortDialog = new SortDialog();
+        sortDialog.show(getSupportFragmentManager(),"sort_dialog");
+    }
+
+    private void sortByPriority(boolean ascendant) {
         Comparator<Task> comparator;
 
-        if (ascendent) {
+        if (ascendant) {
             comparator = new Comparator<Task>() {
                 @Override
                 public int compare(Task o1, Task o2) {
                     if (o1.getTaskPriority() < o2.getTaskPriority())
-                        return 1;
-                    if (o1.getTaskPriority() > o2.getTaskPriority())
                         return -1;
+                    if (o1.getTaskPriority() > o2.getTaskPriority())
+                        return 1;
 
                     return 0;
                 }
@@ -252,9 +206,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public int compare(Task o1, Task o2) {
                     if (o1.getTaskPriority() < o2.getTaskPriority())
-                        return -1;
-                    if (o1.getTaskPriority() > o2.getTaskPriority())
                         return 1;
+                    if (o1.getTaskPriority() > o2.getTaskPriority())
+                        return -1;
 
                     return 0;
                 }
@@ -263,5 +217,89 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Collections.sort(mTasks, comparator);
         fileHelper.writeData(mTasks);
         adapter.notifyDataSetChanged();
+    }
+
+    private void sortByDate(boolean ascendant){
+        Comparator<Task> comparator;
+
+        if (ascendant) {
+            comparator = new Comparator<Task>() {
+                @Override
+                public int compare(Task o1, Task o2) {
+                    if (o1.getTaskDue().compareTo(o2.getTaskDue())<0)
+                        return -1;
+                    if (o1.getTaskDue().compareTo(o2.getTaskDue())>0)
+                        return 1;
+
+                    return 0;
+                }
+            };
+        }
+        else{
+            comparator = new Comparator<Task>() {
+                @Override
+                public int compare(Task o1, Task o2) {
+                    if (o1.getTaskDue().compareTo(o2.getTaskDue())<0)
+                        return 1;
+                    if (o1.getTaskDue().compareTo(o2.getTaskDue())>0)
+                        return -1;
+
+                    return 0;
+                }
+            };
+        }
+        Collections.sort(mTasks, comparator);
+        fileHelper.writeData(mTasks);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void sortByName(boolean ascendant){
+        Comparator<Task> comparator;
+
+        if (ascendant) {
+            comparator = new Comparator<Task>() {
+                @Override
+                public int compare(Task o1, Task o2) {
+                    return o1.getTaskName().compareTo(o2.getTaskName());
+                }
+            };
+        }
+        else{
+            comparator = new Comparator<Task>() {
+                @Override
+                public int compare(Task o1, Task o2) {
+                    return (o1.getTaskName().compareTo(o2.getTaskName()))*-1;
+                }
+            };
+        }
+
+        Collections.sort(mTasks, comparator);
+        fileHelper.writeData(mTasks);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void sortTasks(Integer sType, Integer sOrder) {
+        //0 priority | 1 Date | 2 Name | 3 Class
+        //0 Ascendant | 1 Descendant
+        boolean ascendant = true;
+
+        if (sOrder > 0)
+            ascendant = false;
+
+        switch (sType){
+            case 0:
+                //Sort by priority
+                sortByPriority(ascendant);
+                break;
+            case 1:
+                //Sort by date
+                sortByDate(ascendant);
+                break;
+            case 2:
+                //Sort by name
+                sortByName(ascendant);
+                break;
+        }
     }
 }
