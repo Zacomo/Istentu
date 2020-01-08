@@ -23,7 +23,7 @@
       android:layout_gravity="start"
       android:padding="8dp"
       android:textStyle="bold"
-      android:textColor="@color/title_text"
+      android:textColor="@color/colorPrimary"
       tools:text="Task: Fare la spesa" />
   <TextView
       android:id="@+id/taskClass"

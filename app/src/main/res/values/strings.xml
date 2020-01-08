@@ -7,4 +7,9 @@
         <item> 4 </item>
         <item> 5 </item>
     </string-array>
+
+    <string name="drawerOpen">drawerOpen</string>
+    <string name="drawerClose">drawerClose</string>
+
+    <string name="mainActivity">Attività</string>
 </resources>

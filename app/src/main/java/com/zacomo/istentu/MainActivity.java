@@ -1,21 +1,28 @@
 package com.zacomo.istentu;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, AddDialog.AddDialogListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, AddDialog.AddDialogListener, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
     private ArrayList<Task> mTasks;
@@ -24,6 +31,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RecyclerViewAdapter adapter;
 
     private FileHelper fileHelper;
+
+
+    DrawerLayout drawerLayout;
+    Toolbar toolbar;
+    NavigationView navigationView;
+    ActionBarDrawerToggle toggle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +54,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapter = new RecyclerViewAdapter(this, mTasks, fileHelper, MainActivity.this);
 
         //sampleText();
+
+        drawerLayout = findViewById(R.id.drawerLayout);
+        toolbar = findViewById(R.id.toolbar);
+        navigationView = findViewById(R.id.navigationView);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(R.string.mainActivity);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,R.string.drawerOpen,R.string.drawerClose);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.bringToFront();
 
         initRecyclerView(recyclerView, adapter);
 
@@ -179,4 +206,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTasks.add(new Task("Affitto", "- Pagare mese di Gennaio",3, dataProva, "Categoria A"));
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch (menuItem.getItemId()){
+            case R.id.sort:
+                Toast.makeText(this, "Sort Selected!", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.addClass:
+                Toast.makeText(this, "Add Class Selected!", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.usageGraph:
+                Toast.makeText(this, "Usage Graph Selected!", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.info:
+                Toast.makeText(this, "Info Selected!", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
+        }
+        return false;
+    }
 }
