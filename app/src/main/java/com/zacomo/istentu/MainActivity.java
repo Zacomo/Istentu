@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,7 +19,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AddDialog.AddDialogListener, NavigationView.OnNavigationItemSelectedListener {
 
@@ -211,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (menuItem.getItemId()){
             case R.id.sort:
                 Toast.makeText(this, "Sort Selected!", Toast.LENGTH_SHORT).show();
+                //sortByPriority(false);
                 break;
             case R.id.addClass:
                 Toast.makeText(this, "Add Class Selected!", Toast.LENGTH_SHORT).show();
@@ -225,5 +228,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
         return false;
+    }
+
+    private void sortByPriority(boolean ascendent) {
+        Comparator<Task> comparator;
+
+        if (ascendent) {
+            comparator = new Comparator<Task>() {
+                @Override
+                public int compare(Task o1, Task o2) {
+                    if (o1.getTaskPriority() < o2.getTaskPriority())
+                        return 1;
+                    if (o1.getTaskPriority() > o2.getTaskPriority())
+                        return -1;
+
+                    return 0;
+                }
+            };
+        }
+        else{
+            //Con api >= 23 Collections.sort(mTasks, comparator.reversed());
+            comparator = new Comparator<Task>() {
+                @Override
+                public int compare(Task o1, Task o2) {
+                    if (o1.getTaskPriority() < o2.getTaskPriority())
+                        return -1;
+                    if (o1.getTaskPriority() > o2.getTaskPriority())
+                        return 1;
+
+                    return 0;
+                }
+            };
+        }
+        Collections.sort(mTasks, comparator);
+        fileHelper.writeData(mTasks);
+        adapter.notifyDataSetChanged();
     }
 }

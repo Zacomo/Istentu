@@ -1,8 +1,6 @@
 package com.zacomo.istentu;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-
 public class Task {
 
     private String taskName;
@@ -29,7 +27,7 @@ public class Task {
             this.taskDue = taskDue;
 
         taskPosition = -1;
-    }
+   }
 
     public String getTaskName() {
         return taskName;
@@ -88,7 +86,7 @@ public class Task {
         return taskPosition;
     }
 
-    public void setTaskPosition(int position){
+    public void setTaskPosition(int position) {
         taskPosition = position;
     }
 }
