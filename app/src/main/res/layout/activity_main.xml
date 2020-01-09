@@ -52,7 +52,6 @@
             app:itemTextColor="@android:color/black"
             android:layout_gravity="start"
             />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
@@ -73,6 +72,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_add_black_24dp" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

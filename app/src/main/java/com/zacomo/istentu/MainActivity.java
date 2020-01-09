@@ -34,7 +34,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<Task> mTasks;
     private FloatingActionButton addButton;
 
-    private RecyclerViewAdapter adapter;
+    private RecyclerViewAdapter adapterAllTasks;
+    private RecyclerViewAdapter adapterFilterTasks;
+
+    private ArrayList<Task> filteredTasks;
 
     private TaskFileHelper tasksFH;
     private StringFileHelper classesFH;
@@ -60,14 +63,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         spinnerClasses = classesFH.readData("ClassList");
         classBundle = new Bundle();
-        classBundle.putStringArrayList("ClassList",spinnerClasses);
 
+        classBundle.putStringArrayList("ClassList",spinnerClasses);
         mTasks = tasksFH.readData("TaskList");
 
         addButton = findViewById(R.id.fabAdd);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
 
-        adapter = new RecyclerViewAdapter(this, mTasks, tasksFH, MainActivity.this);
+        filteredTasks = new ArrayList<>();
+
+        adapterAllTasks = new RecyclerViewAdapter(this, mTasks, tasksFH, MainActivity.this);
+        adapterFilterTasks = new RecyclerViewAdapter(this, mTasks, filteredTasks, tasksFH, MainActivity.this);
 
         drawerLayout = findViewById(R.id.drawerLayout);
         toolbar = findViewById(R.id.toolbar);
@@ -82,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.bringToFront();
 
-        initRecyclerView(recyclerView, adapter);
+        initRecyclerView(recyclerView, adapterAllTasks);
 
         addButton.setOnClickListener(this);
 
@@ -115,8 +121,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             //rimuovo il task precedente
             mTasks.remove(newTask.getTaskPosition());
+            filterConsistency();
 
-            adapter.notifyItemRemoved(newTask.getTaskPosition());
+            adapterAllTasks.notifyItemRemoved(newTask.getTaskPosition());
+            adapterFilterTasks.notifyDataSetChanged();
 
             Toast.makeText(this, String.valueOf(newTask.getTaskPosition()), Toast.LENGTH_SHORT).show();
             //aggiorno la posizione del task modificato che sarà size()
@@ -124,6 +132,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             //aggiungo il task
             mTasks.add(newTask.getTaskPosition(), newTask);
+            if (filteredTasks.size() > 0 && (filteredTasks.get(0).getTaskClass().equals(newTask.getTaskClass())))
+                filteredTasks.add(newTask);
         }
         else{
             //se ho un nuovo task
@@ -132,11 +142,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             newTask.setTaskPosition(mTasks.size());
 
             mTasks.add(newTask);
+            if (filteredTasks.size() > 0 && (filteredTasks.get(0).getTaskClass().equals(newTask.getTaskClass())))
+                filteredTasks.add(newTask);
         }
 
         //aggiorno la recyclerView
         tasksFH.writeData(mTasks,"TaskList");
-        adapter.notifyItemInserted(mTasks.indexOf(newTask));
+        adapterAllTasks.notifyItemInserted(mTasks.indexOf(newTask));
+        adapterFilterTasks.notifyDataSetChanged();
         Toast.makeText(this, "Done!", Toast.LENGTH_SHORT).show();
     }
 
@@ -148,23 +161,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    public void modifyDialog(final int position){
+    public void modifyDialog(Task mTask){
 
         //ToDo: si potrebbe sostituire tutto con una stringa Json
 
         Bundle savedInstanceState = new Bundle();
-        savedInstanceState.putString("taskName", mTasks.get(position).getTaskName());
-        savedInstanceState.putString("taskDescription", mTasks.get(position).getTaskDescription());
-        savedInstanceState.putInt("taskPriority", mTasks.get(position).getTaskPriority());
-        savedInstanceState.putString("taskClass", mTasks.get(position).getTaskClass());
+        savedInstanceState.putString("taskName", mTask.getTaskName());
+        savedInstanceState.putString("taskDescription", mTask.getTaskDescription());
+        savedInstanceState.putInt("taskPriority", mTask.getTaskPriority());
+        savedInstanceState.putString("taskClass", mTask.getTaskClass());
 
-        int month = mTasks.get(position).getTaskDue().getInstance().get(Calendar.MONTH);
+        int month = mTask.getTaskDue().getInstance().get(Calendar.MONTH);
         month++;
-        String date = mTasks.get(position).getTaskDue().getInstance().get(Calendar.YEAR) + "/" + month
-                    + "/" + mTasks.get(position).getTaskDue().getInstance().get(Calendar.DAY_OF_MONTH);
+        String date = mTask.getTaskDue().getInstance().get(Calendar.YEAR) + "/" + month
+                    + "/" + mTask.getTaskDue().getInstance().get(Calendar.DAY_OF_MONTH);
 
         savedInstanceState.putString("taskDue", date);
-        savedInstanceState.putInt("taskPosition", position);
+
+        //dovrebbe impostare come posizione del task la sua posizione in mtasks
+        savedInstanceState.putInt("taskPosition", mTasks.indexOf(mTask));
+
         AddDialog addDialog = new AddDialog();
         addDialog.setArguments(classBundle);
         addDialog.setBundle(savedInstanceState);
@@ -177,6 +193,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.sort:
                 Toast.makeText(this, "Sort Selected!", Toast.LENGTH_SHORT).show();
                 openSortDialog();
+                break;
+            case R.id.filter:
+                Toast.makeText(this, "Filter Selected!", Toast.LENGTH_SHORT).show();
+                openFilterDialog();
                 break;
             case R.id.addClass:
                 Toast.makeText(this, "Add Class Selected!", Toast.LENGTH_SHORT).show();
@@ -201,6 +221,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void openSortDialog(){
         SortDialog sortDialog = new SortDialog();
         sortDialog.show(getSupportFragmentManager(),"sort_dialog");
+    }
+
+    private void openFilterDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Filtra per classe");
+        builder.setMessage("Scegli la classe da visualizzare");
+
+        final Spinner spinner = new Spinner(this);
+
+        ArrayList<String> filterClasses = new ArrayList<>();
+        if (spinnerClasses != null)
+            filterClasses = (ArrayList<String>) spinnerClasses.clone();
+
+        filterClasses.add("Tutte");
+
+        Toast.makeText(this, filterClasses.toString(), Toast.LENGTH_SHORT).show();
+        ArrayAdapter<String> spinnerClassesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, filterClasses);
+        spinnerClassesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerClassesAdapter);
+        builder.setView(spinner);
+
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+               //Azioni per filtrare recyclerview, da implementare anche caso "Tutte"
+                filterRecycleView(spinner.getSelectedItem().toString().trim());
+            }
+        });
+
+        builder.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
     }
 
     private void openAddClassDialog(){
@@ -300,8 +359,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             };
         }
         Collections.sort(mTasks, comparator);
+        Collections.sort(filteredTasks, comparator);
         tasksFH.writeData(mTasks,"TaskList");
-        adapter.notifyDataSetChanged();
+        adapterAllTasks.notifyDataSetChanged();
+        adapterFilterTasks.notifyDataSetChanged();
     }
 
     private void sortByDate(boolean ascendant){
@@ -334,8 +395,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             };
         }
         Collections.sort(mTasks, comparator);
+        Collections.sort(filteredTasks, comparator);
         tasksFH.writeData(mTasks,"TaskList");
-        adapter.notifyDataSetChanged();
+        adapterAllTasks.notifyDataSetChanged();
+        adapterFilterTasks.notifyDataSetChanged();
     }
 
     private void sortByName(boolean ascendant){
@@ -359,8 +422,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         Collections.sort(mTasks, comparator);
+        Collections.sort(filteredTasks, comparator);
         tasksFH.writeData(mTasks,"TaskList");
-        adapter.notifyDataSetChanged();
+        adapterAllTasks.notifyDataSetChanged();
+        adapterFilterTasks.notifyDataSetChanged();
     }
 
     @Override
@@ -385,6 +450,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //Sort by name
                 sortByName(ascendant);
                 break;
+        }
+    }
+
+    private void filterRecycleView(String filterClass){
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        //resetto il vettore filteredTasks altrimenti compaiono anche task selezionati in precedenza
+        filteredTasks.clear();
+
+        if (!filterClass.equals("Tutte")){
+
+            for (int i = 0; i < mTasks.size(); i++){
+                if (mTasks.get(i).getTaskClass().equals(filterClass))
+                    filteredTasks.add(mTasks.get(i));
+            }
+
+            initRecyclerView(recyclerView,adapterFilterTasks);
+
+        }
+
+        else{
+            Toast.makeText(this, "Tutte selected", Toast.LENGTH_SHORT).show();
+
+            initRecyclerView(recyclerView,adapterAllTasks);
+        }
+
+        //filteredTasks = updateTaskPositions(filteredTasks);
+
+    }
+
+    private ArrayList<Task> updateTaskPositions(ArrayList<Task> tasks){
+        for (int i=0; i<tasks.size(); i++)
+            tasks.get(i).setTaskPosition(i);
+
+        return tasks;
+    }
+
+    private void filterConsistency(){
+        //metodo per rimuovere da filtered tasks gli elementi rimossi da mTasks
+        for (int i=0; i < filteredTasks.size(); i++){
+            if (!mTasks.contains(filteredTasks.get(i)))
+                filteredTasks.remove(i);
         }
     }
 }

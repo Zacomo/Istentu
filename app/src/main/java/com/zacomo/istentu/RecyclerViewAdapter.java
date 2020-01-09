@@ -24,11 +24,22 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private Context mContext;
     private MainActivity mainActivity;
 
+    private ArrayList<Task> recViewTasks;
+
     private TaskFileHelper tasksFH;
 
-    public RecyclerViewAdapter(Context context, ArrayList<Task> tasks, TaskFileHelper tasksFH, MainActivity mainActivity) {
-        this.mTasks = tasks;
+    public RecyclerViewAdapter(Context context, ArrayList<Task> tasks, ArrayList<Task> filterTasks, TaskFileHelper tasksFH, MainActivity mainActivity) {
         this.mContext = context;
+        this.mTasks = tasks;
+        recViewTasks = filterTasks;
+        this.tasksFH = tasksFH;
+        this.mainActivity = mainActivity;
+    }
+
+    public RecyclerViewAdapter(Context context, ArrayList<Task> tasks, TaskFileHelper tasksFH, MainActivity mainActivity) {
+        this.mContext = context;
+        this.mTasks = tasks;
+        recViewTasks = mTasks;
         this.tasksFH = tasksFH;
         this.mainActivity = mainActivity;
     }
@@ -44,21 +55,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         Log.d(TAG, "onBindViewHolder: called");
 
-        holder.taskName.setText(mTasks.get(position).getTaskName());
-        holder.taskDescription.setText(mTasks.get(position).getTaskDescription());
-        holder.taskClass.setText(mTasks.get(position).getTaskClass());
-        holder.taskPriority.setText("Priorità: " + mTasks.get(position).getTaskPriority());
+        holder.taskName.setText(recViewTasks.get(position).getTaskName());
+        holder.taskDescription.setText(recViewTasks.get(position).getTaskDescription());
+        holder.taskClass.setText(recViewTasks.get(position).getTaskClass());
+        holder.taskPriority.setText("Priorità: " + recViewTasks.get(position).getTaskPriority());
 
         // data nel formato dd/M/yyyy
-        String mTaskDue = DateFormat.getDateInstance(DateFormat.FULL).format(mTasks.get(position).getTaskDue().getTime());
+        final String mTaskDue = DateFormat.getDateInstance(DateFormat.FULL).format(recViewTasks.get(position).getTaskDue().getTime());
         holder.taskDue.setText(mTaskDue);
 
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: clicked on: " + mTasks.get(position));
-                //Toast.makeText(mContext, mTasks.get(position).getTaskPosition() + "||" + position, Toast.LENGTH_SHORT).show();
-                mainActivity.modifyDialog(position);
+                Log.d(TAG, "onClick: clicked on: " + recViewTasks.get(position));
+                //Toast.makeText(mContext, recViewTasks.get(position).getTaskPosition() + "||" + position, Toast.LENGTH_SHORT).show();
+                mainActivity.modifyDialog(recViewTasks.get(position));
 
             }
         });
@@ -66,7 +77,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public boolean onLongClick(View v) {
                 //Metodo per rimozione task
-                removeDialog(position);
+                if (tasksFH!= null)
+                    removeDialog(position);
 
                 //true = il long click è gestito qui; false altrimenti
                 return true;
@@ -76,7 +88,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public int getItemCount() {
-        return mTasks.size();
+        return recViewTasks.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -104,23 +116,31 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private void removeDialog(final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle("Eliminazione Task");
-        builder.setMessage("Sei sicuro di voler eliminare " + "\"" + mTasks.get(position).getTaskName() + "\"");
+        builder.setMessage("Sei sicuro di voler eliminare " + "\"" + recViewTasks.get(position).getTaskName() + "\"");
         builder.setCancelable(false);
 
         builder.setPositiveButton("Sì", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(mContext, "Fatto!", Toast.LENGTH_SHORT).show();
-                mTasks.remove(position);
+                if (tasksFH!=null){
 
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, getItemCount());
+                    Toast.makeText(mContext, "Fatto!", Toast.LENGTH_SHORT).show();
+                    Task toRemove = recViewTasks.get(position);
+                    recViewTasks.remove(position);
 
-                //devo aggiornare le posizioni dei task successivi a quello rimosso
-                for (int i = position; i < mTasks.size(); i++)
-                    mTasks.get(i).setTaskPosition(i);
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, getItemCount());
 
-                tasksFH.writeData(mTasks,"TaskList");
+                    //devo aggiornare le posizioni dei task successivi a quello rimosso
+                    for (int i = position; i < recViewTasks.size(); i++)
+                        recViewTasks.get(i).setTaskPosition(i);
+
+                    //Rimuovere elemento rimosso da recViewTasks anche da mTasks
+                    mTasks.remove(toRemove);
+
+                    //salvo mTasks, non recViewTasks
+                    tasksFH.writeData(mTasks,"TaskList");
+                }
             }
         });
 

@@ -3,7 +3,10 @@
 
     <item
         android:id="@+id/sort"
-        android:title="Sort"/>
+        android:title="Ordina"/>
+    <item
+        android:id="@+id/filter"
+        android:title="Filtra"/>
     <item
         android:id="@+id/addClass"
         android:title="Aggiungi una classe"/>
