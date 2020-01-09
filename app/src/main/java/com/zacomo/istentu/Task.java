@@ -1,6 +1,12 @@
 package com.zacomo.istentu;
 
+import android.icu.text.TimeZoneFormat;
+
+import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
 public class Task {
 
     private String taskName;
@@ -10,7 +16,7 @@ public class Task {
     private String taskClass;
     private int taskPosition;
 
-    private boolean done;
+    private int status;
     private Calendar doneDate;
 
     public Task(){
@@ -34,7 +40,7 @@ public class Task {
             this.taskDue = taskDue;
 
         taskPosition = -1;
-        done = false;
+        status = 0;
         doneDate = null;
    }
 
@@ -99,12 +105,46 @@ public class Task {
         taskPosition = position;
     }
 
-    public boolean isDone() {
-        return done;
+    public int getTaskStatus() {
+        return status;
     }
 
-    public void setDone(boolean done) {
-        this.done = done;
+    public String statusToString(){
+        String statusString = "Stato: ";
+        switch (status){
+            case 0:
+                statusString += "in attesa";
+                break;
+            case 1:
+                statusString += "in corso";
+                break;
+            case 2:
+                String date = "";
+                String time = "";
+                String prova = "";
+                if (doneDate != null){
+                    date = DateFormat.getDateInstance(DateFormat.SHORT).format(doneDate.getTime());
+                    time = DateFormat.getTimeInstance(DateFormat.SHORT).format(doneDate.getTime());
+                }
+                statusString = "Completato il " + date + " alle " + time + "\n" + prova;
+                break;
+        }
+        return statusString;
+    }
+
+    public String taskDueToString(){
+        String date, time;
+        date = DateFormat.getDateInstance(DateFormat.SHORT).format(taskDue.getTime());
+        time = DateFormat.getTimeInstance(DateFormat.SHORT).format(taskDue.getTime());
+        return "Scadenza: \n" + date + " alle " + time;
+    }
+
+    public void setStatus(int status) {
+        //dev'essere compreso tra 0 e 2
+        if (status < 0 || status > 2)
+            this.status = 0;
+        else
+            this.status = status;
     }
 
     public Calendar getDoneDate() {

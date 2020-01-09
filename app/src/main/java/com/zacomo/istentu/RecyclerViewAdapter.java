@@ -62,15 +62,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.taskPriority.setText("Priorità: " + recViewTasks.get(position).getTaskPriority());
 
         // data nel formato dd/M/yyyy
-        final String mTaskDue = DateFormat.getDateInstance(DateFormat.FULL).format(recViewTasks.get(position).getTaskDue().getTime());
-        holder.taskDue.setText(mTaskDue);
+        holder.taskDue.setText(recViewTasks.get(position).taskDueToString());
 
-        if (recViewTasks.get(position).isDone()){
-            final String mTaskDoneMessage = "Completed on: " + DateFormat.getDateInstance(DateFormat.FULL).format(recViewTasks.get(position).getDoneDate().getTime());
-            holder.taskDone.setText(mTaskDoneMessage);
-        }
-        else
-            holder.taskDone.setText("Stato: in corso");
+        holder.taskDone.setText(recViewTasks.get(position).statusToString());
 
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override

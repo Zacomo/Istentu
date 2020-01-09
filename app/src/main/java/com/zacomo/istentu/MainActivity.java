@@ -167,28 +167,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.setTitle("Cosa vuoi fare con "+ "\""+mTask.getTaskName()+"\""+"?");
         builder.setCancelable(false);
 
-        builder.setItems(new CharSequence[]{"Modifica Task", "Segna come \"completo\"", "Segna come \"in corso\""}, new DialogInterface.OnClickListener() {
+        builder.setItems(new CharSequence[]{"Modifica Task", "Segna come \"in corso\"", "Segna come \"completo\"","Segna come \"in attesa\""}, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // The 'which' argument contains the index position
-                        // of the selected item
+                        // The 'which' argument contains the index position of the selected item
+                        //status: 0 == in attesa | 1 == in corso | 2 == completo
                         switch (which) {
                             case 0:
                                 modifyDialog(mTask);
                                 break;
                             case 1:
-                                mTask.setDone(true);
-                                mTask.setDoneDate(Calendar.getInstance());
+                                mTask.setStatus(1);
+                                mTask.setDoneDate(null);
                                 adapterAllTasks.notifyDataSetChanged();
                                 adapterFilterTasks.notifyDataSetChanged();
                                 break;
                             case 2:
-                                mTask.setDone(false);
+                                mTask.setStatus(2);
+                                mTask.setDoneDate(Calendar.getInstance());
+                                adapterAllTasks.notifyDataSetChanged();
+                                adapterFilterTasks.notifyDataSetChanged();
+                                break;
+                            case 3:
+                                mTask.setStatus(0);
                                 mTask.setDoneDate(null);
                                 adapterAllTasks.notifyDataSetChanged();
                                 adapterFilterTasks.notifyDataSetChanged();
                                 break;
                         }
+                        tasksFH.writeData(mTasks,"TaskList");
                     }
                 });
         builder.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {

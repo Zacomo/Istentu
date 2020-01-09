@@ -143,7 +143,7 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
         taskDue.set(year,month,dayOfMonth);
 
         //month incrementato di uno perchè il conteggio inizia da 0 (Gen == 0)
-        String data = year + "/" + ++month + "/" + dayOfMonth;
+        String data = dayOfMonth + "/" + ++month + "/" + year;
         textViewDate.setText(data);
     }
 
