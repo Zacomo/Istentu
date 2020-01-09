@@ -161,6 +161,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    public void moreInfoDialog(final Task mTask){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(mTask.getTaskName());
+        builder.setMessage("Cosa vuoi fare con "+ "\""+mTask.getTaskName()+"\""+"?");
+        builder.setCancelable(false);
+
+        builder.setPositiveButton("Modifica", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                modifyDialog(mTask);
+            }
+        });
+        builder.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    //ora può essere private
     public void modifyDialog(Task mTask){
 
         //ToDo: si potrebbe sostituire tutto con una stringa Json

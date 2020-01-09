@@ -10,6 +10,9 @@ public class Task {
     private String taskClass;
     private int taskPosition;
 
+    private boolean done;
+    private Calendar doneDate;
+
     public Task(){
 
     }
@@ -31,6 +34,8 @@ public class Task {
             this.taskDue = taskDue;
 
         taskPosition = -1;
+        done = false;
+        doneDate = null;
    }
 
     public String getTaskName() {
@@ -92,5 +97,21 @@ public class Task {
 
     public void setTaskPosition(int position) {
         taskPosition = position;
+    }
+
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
+    }
+
+    public Calendar getDoneDate() {
+        return doneDate;
+    }
+
+    public void setDoneDate(Calendar doneDate) {
+        this.doneDate = doneDate;
     }
 }

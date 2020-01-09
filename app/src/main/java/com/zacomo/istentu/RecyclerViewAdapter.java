@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,12 +65,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         final String mTaskDue = DateFormat.getDateInstance(DateFormat.FULL).format(recViewTasks.get(position).getTaskDue().getTime());
         holder.taskDue.setText(mTaskDue);
 
+        if (recViewTasks.get(position).isDone()){
+            final String mTaskDoneMessage = "Completed on: " + DateFormat.getDateInstance(DateFormat.FULL).format(recViewTasks.get(position).getDoneDate().getTime());
+            holder.taskDone.setText(mTaskDoneMessage);
+        }
+        else
+            holder.taskDone.setText("Stato: in corso");
+
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: clicked on: " + recViewTasks.get(position));
                 //Toast.makeText(mContext, recViewTasks.get(position).getTaskPosition() + "||" + position, Toast.LENGTH_SHORT).show();
-                mainActivity.modifyDialog(recViewTasks.get(position));
+                mainActivity.moreInfoDialog(recViewTasks.get(position));
+                //mainActivity.modifyDialog(recViewTasks.get(position));
 
             }
         });
@@ -94,16 +103,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView taskName;
+        TextView taskDone;
         TextView taskDescription;
         TextView taskClass;
         TextView taskPriority;
         TextView taskDue;
-        LinearLayout parentLayout;
+        RelativeLayout parentLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             taskName = itemView.findViewById(R.id.taskName);
+            taskDone = itemView.findViewById(R.id.taskDone);
             taskDescription = itemView.findViewById(R.id.taskDescription);
             taskClass = itemView.findViewById(R.id.taskClass);
             taskPriority = itemView.findViewById(R.id.taskPriority);
