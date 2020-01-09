@@ -8,6 +8,9 @@
         android:id="@+id/addClass"
         android:title="Aggiungi una classe"/>
     <item
+        android:id="@+id/removeClass"
+        android:title="Rimuovi una classe"/>
+    <item
         android:id="@+id/usageGraph"
         android:title="Vedi statistiche"/>
     <item

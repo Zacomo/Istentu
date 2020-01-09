@@ -15,7 +15,9 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -180,6 +182,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, "Add Class Selected!", Toast.LENGTH_SHORT).show();
                 openAddClassDialog();
                 break;
+            case R.id.removeClass:
+                Toast.makeText(this, "Remove Class Selected!", Toast.LENGTH_SHORT).show();
+                openRemoveClassDialog();
+                break;
             case R.id.usageGraph:
                 Toast.makeText(this, "Usage Graph Selected!", Toast.LENGTH_SHORT).show();
                 break;
@@ -217,6 +223,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 else
                     Toast.makeText(MainActivity.this, "Classe già presente!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void openRemoveClassDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Rimuovi classe");
+        builder.setMessage("Scegli la classe da rimuovere:");
+
+        final Spinner spinner = new Spinner(this);
+        Toast.makeText(this, spinnerClasses.toString(), Toast.LENGTH_SHORT).show();
+        ArrayAdapter<String> spinnerClassesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerClasses);
+        spinnerClassesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerClassesAdapter);
+        builder.setView(spinner);
+
+        builder.setPositiveButton("Fatto", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //String newClass = editText.getText().toString().trim();
+                spinnerClasses.remove(spinner.getSelectedItem().toString());
+                classesFH.writeData(spinnerClasses,"ClassList");
             }
         });
 
