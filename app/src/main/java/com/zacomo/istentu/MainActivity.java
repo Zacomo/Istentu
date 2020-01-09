@@ -163,24 +163,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void moreInfoDialog(final Task mTask){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(mTask.getTaskName());
-        builder.setMessage("Cosa vuoi fare con "+ "\""+mTask.getTaskName()+"\""+"?");
+        //builder.setTitle(mTask.getTaskName());
+        builder.setTitle("Cosa vuoi fare con "+ "\""+mTask.getTaskName()+"\""+"?");
         builder.setCancelable(false);
 
-        builder.setPositiveButton("Modifica", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                modifyDialog(mTask);
-            }
-        });
+        builder.setItems(new CharSequence[]{"Modifica Task", "Segna come \"completo\"", "Segna come \"in corso\""}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // The 'which' argument contains the index position
+                        // of the selected item
+                        switch (which) {
+                            case 0:
+                                modifyDialog(mTask);
+                                break;
+                            case 1:
+                                mTask.setDone(true);
+                                mTask.setDoneDate(Calendar.getInstance());
+                                adapterAllTasks.notifyDataSetChanged();
+                                adapterFilterTasks.notifyDataSetChanged();
+                                break;
+                            case 2:
+                                mTask.setDone(false);
+                                mTask.setDoneDate(null);
+                                adapterAllTasks.notifyDataSetChanged();
+                                adapterFilterTasks.notifyDataSetChanged();
+                                break;
+                        }
+                    }
+                });
         builder.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
         });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+        builder.create().show();
     }
 
     //ora può essere private
