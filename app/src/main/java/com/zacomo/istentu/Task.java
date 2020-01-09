@@ -10,6 +10,10 @@ public class Task {
     private String taskClass;
     private int taskPosition;
 
+    public Task(){
+
+    }
+
     public Task(String taskName, String taskDescription, int taskPriority, Calendar taskDue, String taskClass) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;

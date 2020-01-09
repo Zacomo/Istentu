@@ -2,26 +2,26 @@ package com.zacomo.istentu;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,13 +34,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private RecyclerViewAdapter adapter;
 
-    private FileHelper fileHelper;
+    private TaskFileHelper tasksFH;
+    private StringFileHelper classesFH;
 
+    private ArrayList<String> spinnerClasses;
 
-    DrawerLayout drawerLayout;
-    Toolbar toolbar;
-    NavigationView navigationView;
-    ActionBarDrawerToggle toggle;
+    private DrawerLayout drawerLayout;
+    private Toolbar toolbar;
+    private NavigationView navigationView;
+    private ActionBarDrawerToggle toggle;
+
+    private Bundle classBundle;
 
 
     @Override
@@ -49,13 +53,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         Log.d(TAG, "OnCreate: started");
 
-        fileHelper = new FileHelper(this);
+        tasksFH = new TaskFileHelper(this);
+        classesFH = new StringFileHelper(this);
 
-        mTasks = fileHelper.readData();
+        spinnerClasses = classesFH.readData("ClassList");
+        classBundle = new Bundle();
+        classBundle.putStringArrayList("ClassList",spinnerClasses);
+
+        mTasks = tasksFH.readData("TaskList");
+
         addButton = findViewById(R.id.fabAdd);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
 
-        adapter = new RecyclerViewAdapter(this, mTasks, fileHelper, MainActivity.this);
+        adapter = new RecyclerViewAdapter(this, mTasks, tasksFH, MainActivity.this);
 
         drawerLayout = findViewById(R.id.drawerLayout);
         toolbar = findViewById(R.id.toolbar);
@@ -89,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void addBtnDialog() {
 
         AddDialog addDialog = new AddDialog();
+        addDialog.setArguments(classBundle);
         addDialog.show(getSupportFragmentManager(), "Add dialog");
 
     }
@@ -122,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         //aggiorno la recyclerView
-        fileHelper.writeData(mTasks);
+        tasksFH.writeData(mTasks,"TaskList");
         adapter.notifyItemInserted(mTasks.indexOf(newTask));
         Toast.makeText(this, "Done!", Toast.LENGTH_SHORT).show();
     }
@@ -153,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         savedInstanceState.putString("taskDue", date);
         savedInstanceState.putInt("taskPosition", position);
         AddDialog addDialog = new AddDialog();
+        addDialog.setArguments(classBundle);
         addDialog.setBundle(savedInstanceState);
         addDialog.show(getSupportFragmentManager(), "Modify dialog");
     }
@@ -166,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.addClass:
                 Toast.makeText(this, "Add Class Selected!", Toast.LENGTH_SHORT).show();
+                openAddClassDialog();
                 break;
             case R.id.usageGraph:
                 Toast.makeText(this, "Usage Graph Selected!", Toast.LENGTH_SHORT).show();
@@ -182,6 +195,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void openSortDialog(){
         SortDialog sortDialog = new SortDialog();
         sortDialog.show(getSupportFragmentManager(),"sort_dialog");
+    }
+
+    private void openAddClassDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Nuova classe");
+        builder.setMessage("Inserisci il nome di una nuova classe:");
+
+        final EditText editText = new EditText(this);
+        builder.setView(editText);
+
+        builder.setPositiveButton("Fatto", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String newClass = editText.getText().toString().trim(); 
+                //se la classe non è presente allora la aggiungo
+                //!(spinnerClasses == null)
+                if (!spinnerClasses.contains(newClass)){
+                    spinnerClasses.add(newClass);
+                    classesFH.writeData(spinnerClasses,"ClassList");
+                }
+                else
+                    Toast.makeText(MainActivity.this, "Classe già presente!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     private void sortByPriority(boolean ascendant) {
@@ -215,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             };
         }
         Collections.sort(mTasks, comparator);
-        fileHelper.writeData(mTasks);
+        tasksFH.writeData(mTasks,"TaskList");
         adapter.notifyDataSetChanged();
     }
 
@@ -249,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             };
         }
         Collections.sort(mTasks, comparator);
-        fileHelper.writeData(mTasks);
+        tasksFH.writeData(mTasks,"TaskList");
         adapter.notifyDataSetChanged();
     }
 
@@ -274,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         Collections.sort(mTasks, comparator);
-        fileHelper.writeData(mTasks);
+        tasksFH.writeData(mTasks,"TaskList");
         adapter.notifyDataSetChanged();
     }
 

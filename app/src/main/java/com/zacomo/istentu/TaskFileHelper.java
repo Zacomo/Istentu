@@ -11,28 +11,28 @@ import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class FileHelper {
+public class TaskFileHelper {
 
     Context context;
 
-    public FileHelper(Context context){
+    public TaskFileHelper(Context context){
         this.context = context;
     }
 
 
-    public void writeData(ArrayList<Task> mTasks){
+    public void writeData(ArrayList<Task> mTasks, String key){
         SharedPreferences sharedPreferences = context.getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
         String json = gson.toJson(mTasks);
-        editor.putString("TaskList", json);
+        editor.putString(key, json);
         editor.apply();
     }
 
-    public ArrayList<Task> readData(){
+    public ArrayList<Task> readData(String key){
         SharedPreferences sharedPreferences = context.getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
-        String json = sharedPreferences.getString("TaskList", null);
+        String json = sharedPreferences.getString(key, null);
         Type type = new TypeToken<ArrayList<Task>>() {}.getType();
         ArrayList<Task> mTasks = gson.fromJson(json, type);
 

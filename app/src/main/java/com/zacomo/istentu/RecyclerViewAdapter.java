@@ -24,12 +24,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private Context mContext;
     private MainActivity mainActivity;
 
-    private FileHelper fileHelper;
+    private TaskFileHelper tasksFH;
 
-    public RecyclerViewAdapter(Context context, ArrayList<Task> tasks, FileHelper fileHelper, MainActivity mainActivity) {
+    public RecyclerViewAdapter(Context context, ArrayList<Task> tasks, TaskFileHelper tasksFH, MainActivity mainActivity) {
         this.mTasks = tasks;
         this.mContext = context;
-        this.fileHelper = fileHelper;
+        this.tasksFH = tasksFH;
         this.mainActivity = mainActivity;
     }
 
@@ -120,7 +120,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 for (int i = position; i < mTasks.size(); i++)
                     mTasks.get(i).setTaskPosition(i);
 
-                fileHelper.writeData(mTasks);
+                tasksFH.writeData(mTasks,"TaskList");
             }
         });
 

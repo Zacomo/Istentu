@@ -13,6 +13,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,6 +39,8 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
 
     private String dialogTitle;
 
+    private ArrayList<String> spinnerClasses;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable final Bundle savedInstanceState) {
@@ -59,10 +62,9 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
 
         taskDue = Calendar.getInstance();
 
-        ArrayList<String> spinnerClasses = new ArrayList<>();
-        spinnerClasses.add("Casa");
-        spinnerClasses.add("Lavoro");
-        spinnerClasses.add("Studio");
+        spinnerClasses = new ArrayList<>();
+        spinnerClasses = getArguments().getStringArrayList("ClassList");
+        Toast.makeText(getContext(), spinnerClasses.toString(), Toast.LENGTH_SHORT).show();
 
         ArrayAdapter<String> spinnerClassesAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, spinnerClasses);
         spinnerClassesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
