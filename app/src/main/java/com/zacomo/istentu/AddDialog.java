@@ -109,10 +109,13 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
                         //azioni da intraprendere quando si chiude la finestra di dialogo "con successo"
+                        String sClass ="";
+                        if (spinnerInsertClass.getSelectedItem() != null)
+                            sClass = spinnerInsertClass.getSelectedItem().toString();
                         Task newTask = new Task(editTextInsertTaskName.getText().toString(),
                                 editTextInsertTaskDescription.getText().toString(),
                                 spinnerInsertPriority.getSelectedItemPosition() + 1,
-                                taskDue, spinnerInsertClass.getSelectedItem().toString());
+                                taskDue, sClass);
 
                         if (bundle != null)
                             newTask.setTaskPosition(bundle.getInt("taskPosition"));
