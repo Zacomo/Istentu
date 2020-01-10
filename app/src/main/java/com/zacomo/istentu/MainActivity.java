@@ -5,10 +5,13 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Notification;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,7 +31,12 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
+import static com.zacomo.istentu.BaseApp.CHANNEL_1_ID;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AddDialog.AddDialogListener, NavigationView.OnNavigationItemSelectedListener, SortDialog.SortDialogListener {
+
+    //NotificationManagerCompat utilizza dei controlli per garantire la retrocompatibilità delle notifiche
+    private NotificationManagerCompat notificationManager;
 
     private static final String TAG = "MainActivity";
     private ArrayList<Task> mTasks;
@@ -57,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(TAG, "OnCreate: started");
+
+        notificationManager = NotificationManagerCompat.from(this);
 
         tasksFH = new TaskFileHelper(this);
         classesFH = new StringFileHelper(this);
@@ -255,7 +265,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.notificationPreferences:
                 Toast.makeText(this, "Notification Preferences Selected!", Toast.LENGTH_SHORT).show();
-                openNotificationPreferencesDialog();
+                //potrei estrapolare testo task e passarlo come parametro di sendOnChannel1
+                sendOnChannel1(findViewById(R.id.drawerLayout));
+                //openNotificationPreferencesDialog();
             case R.id.usageGraph:
                 Toast.makeText(this, "Usage Graph Selected!", Toast.LENGTH_SHORT).show();
                 break;
@@ -546,5 +558,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (!mTasks.contains(filteredTasks.get(i)))
                 filteredTasks.remove(i);
         }
+    }
+
+    public void sendOnChannel1(View v){
+        String title = "Nome Task Qui?";
+        String message = "Nome Task scade oggi!";
+        //.setWhen e .setShowWhen
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
+                .setSmallIcon(R.drawable.ic_wb_incandescent_black_24dp)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_REMINDER)
+                .build();
+        //l'id dev'essere unico se voglio mandare più notifiche contemporaneamente da qui
+        //se voglio cambiare o eliminare una notifica devo usare l'id corrispondente
+        notificationManager.notify(1,notification);
     }
 }
