@@ -80,6 +80,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         classBundle.putStringArrayList("ClassList",spinnerClasses);
         mTasks = tasksFH.readData("TaskList");
 
+        //è importante che sia dopo l'inizializzazione dei task
+        //init notifications
         addButton = findViewById(R.id.fabAdd);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
 
@@ -124,8 +126,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addDialog.show(getSupportFragmentManager(), "Add dialog");
 
     }
-
     //metodo che inserisce nel vettore il task (nuovo o modificato che sia)
+
     @Override
     public void insertData(Task newTask) {
 
@@ -219,8 +221,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
         builder.create().show();
     }
-
     //ora può essere private
+
     public void modifyDialog(Task mTask){
 
         //ToDo: si potrebbe sostituire tutto con una stringa Json
@@ -269,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.notificationPreferences:
                 Toast.makeText(this, "Notification Preferences Selected!", Toast.LENGTH_SHORT).show();
                 //potrei estrapolare testo task e passarlo come parametro di sendOnChannel1
-                sendOnChannel1(findViewById(R.id.drawerLayout));
+                notifyChannel1(findViewById(R.id.drawerLayout));
                 //openNotificationPreferencesDialog();
             case R.id.usageGraph:
                 Toast.makeText(this, "Usage Graph Selected!", Toast.LENGTH_SHORT).show();
@@ -338,7 +340,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.setPositiveButton("Fatto", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String newClass = editText.getText().toString().trim(); 
+                String newClass = editText.getText().toString().trim();
                 //se la classe non è presente allora la aggiungo
                 //!(spinnerClasses == null)
                 if (!spinnerClasses.contains(newClass)){
@@ -394,7 +396,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void openNotificationPreferencesDialog(){
-        
+
     }
 
     private void sortByPriority(boolean ascendant) {
@@ -563,7 +565,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void sendOnChannel1(View v){
+    public void notifyChannel1(View v){
+        //for che imposta notifiche per tutti i task
+        //iterare su posizioni task in mTask e gestire id notifiche di conseguenza
         String title = "Nome Task Qui?";
         String message = "Nome Task scade oggi!";
 
@@ -573,10 +577,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         PendingIntent actionIntent = PendingIntent.getBroadcast(this,
                 0,broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Intent activityIntent = new Intent(this, MainActivity.class);
+        Intent activityIntent = new Intent(this, PostponeTaskActivity.class);
+        activityIntent.putExtra("position",0);
+        activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         //wrapper per poter passare l'intent alla notifica
         PendingIntent contentIntent = PendingIntent.getActivity(this,
-                0, activityIntent,0);
+                0, activityIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
         //Si possono avere fino a 3 actionbutton (.addAction)
         //.setWhen e .setShowWhen

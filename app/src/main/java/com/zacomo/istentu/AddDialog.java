@@ -71,6 +71,13 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
 
         spinnerClasses = new ArrayList<>();
         spinnerClasses = getArguments().getStringArrayList("ClassList");
+
+        if (!spinnerClasses.contains("Lavoro"))
+            spinnerClasses.add(0,"Lavoro");
+
+        if (!spinnerClasses.contains("Casa"))
+            spinnerClasses.add(0,"Casa");
+
         Toast.makeText(getContext(), spinnerClasses.toString(), Toast.LENGTH_SHORT).show();
 
         ArrayAdapter<String> spinnerClassesAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, spinnerClasses);
