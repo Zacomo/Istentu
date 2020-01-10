@@ -7,12 +7,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -563,6 +566,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void sendOnChannel1(View v){
         String title = "Nome Task Qui?";
         String message = "Nome Task scade oggi!";
+
+        Intent broadcastIntent = new Intent(this, NotificationReceiver.class);
+        broadcastIntent.putExtra("toastMessage",message);
+        //FLAG_UPDATE_CURRENT indica che se viene creato un nuovo intent, il messaggio viene agggiornato
+        PendingIntent actionIntent = PendingIntent.getBroadcast(this,
+                0,broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent activityIntent = new Intent(this, MainActivity.class);
+        //wrapper per poter passare l'intent alla notifica
+        PendingIntent contentIntent = PendingIntent.getActivity(this,
+                0, activityIntent,0);
+
+        //Si possono avere fino a 3 actionbutton (.addAction)
         //.setWhen e .setShowWhen
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
                 .setSmallIcon(R.drawable.ic_wb_incandescent_black_24dp)
@@ -570,6 +586,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setContentText(message)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_REMINDER)
+                .setColor(ContextCompat.getColor(this,R.color.colorPrimary))
+                .setContentIntent(contentIntent)
+                .setAutoCancel(true)
+                .addAction(R.drawable.ic_watch_later_black_24dp, "Toast", actionIntent)
                 .build();
         //l'id dev'essere unico se voglio mandare più notifiche contemporaneamente da qui
         //se voglio cambiare o eliminare una notifica devo usare l'id corrispondente
