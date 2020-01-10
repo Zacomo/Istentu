@@ -34,6 +34,7 @@
         android:id="@+id/taskDone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAlignment="textEnd"
         android:paddingRight="8dp"
         android:padding="8dp"
         android:layout_marginTop="8dp"

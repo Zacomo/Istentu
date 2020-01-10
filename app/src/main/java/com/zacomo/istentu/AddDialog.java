@@ -3,6 +3,7 @@ package com.zacomo.istentu;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -13,23 +14,27 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.TimeZone;
 
-public class AddDialog extends AppCompatDialogFragment implements DatePickerDialog.OnDateSetListener {
+public class AddDialog extends AppCompatDialogFragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private EditText editTextInsertTaskName;
     private Spinner spinnerInsertPriority, spinnerInsertClass;
     private EditText editTextInsertTaskDescription;
-    private TextView textViewDate;
+    private TextView textViewDate, textViewTime;
 
     private Calendar taskDue;
 
@@ -53,12 +58,14 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
         View view = inflater.inflate(R.layout.layout_add_btn_dialog, null);
 
         FloatingActionButton fabDatePicker = view.findViewById(R.id.fabDatePicker);
+        FloatingActionButton fabTimePicker = view.findViewById(R.id.fabTimePicker);
 
         editTextInsertTaskName = view.findViewById(R.id.insertTaskName);
         spinnerInsertPriority = view.findViewById(R.id.insertTaskPriority);
         spinnerInsertClass = view.findViewById(R.id.insertTaskClass);
         editTextInsertTaskDescription = view.findViewById(R.id.insertTaskDescription);
         textViewDate = view.findViewById(R.id.textViewDate);
+        textViewTime = view.findViewById(R.id.textViewTime);
 
         taskDue = Calendar.getInstance();
 
@@ -76,6 +83,13 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
             @Override
             public void onClick(View v) {
                 showDatePickerDialog();
+            }
+        });
+
+        fabTimePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimePickerDialog();
             }
         });
 
@@ -136,15 +150,53 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
         datePickerDialog.show();
     }
 
+    private void showTimePickerDialog(){
+        TimePickerDialog timePickerDialog = new TimePickerDialog(
+                getContext(),
+                this,
+                Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
+                Calendar.getInstance().get(Calendar.MINUTE),
+                true
+        );
+        timePickerDialog.show();
+    }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-        taskDue.set(year,month,dayOfMonth);
+        //Cambio data taskDue senza cambiare ora
+        taskDue.set(year,month,dayOfMonth,taskDue.get(Calendar.HOUR_OF_DAY),taskDue.get(Calendar.MINUTE));
 
         //month incrementato di uno perchè il conteggio inizia da 0 (Gen == 0)
-        String data = dayOfMonth + "/" + ++month + "/" + year;
+        ++month;
+        String d,m;
+        if (dayOfMonth < 10)
+            d = "0"+dayOfMonth;
+        else
+            d = Integer.toString(dayOfMonth);
+        if (month < 10)
+            m = "0"+month;
+        else
+            m = Integer.toString(month);
+        String data = d + "/" + m + "/" + year;
         textViewDate.setText(data);
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        //Cambio ora taskDue senza cambiare data
+        taskDue.set(taskDue.get(Calendar.YEAR),taskDue.get(Calendar.MONTH),taskDue.get(Calendar.DAY_OF_MONTH),hourOfDay,minute);
+        String h,m;
+        if (hourOfDay < 10)
+            h = "0"+hourOfDay;
+        else
+            h = Integer.toString(hourOfDay);
+        if (minute < 10)
+            m = "0"+minute;
+        else
+            m = Integer.toString(minute);
+
+        textViewTime.setText(h + ":" + m);
     }
 
     //metodo da richiamare quando si vuole modificare un task

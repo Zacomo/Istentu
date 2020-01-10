@@ -253,6 +253,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, "Remove Class Selected!", Toast.LENGTH_SHORT).show();
                 openRemoveClassDialog();
                 break;
+            case R.id.notificationPreferences:
+                Toast.makeText(this, "Notification Preferences Selected!", Toast.LENGTH_SHORT).show();
+                openNotificationPreferencesDialog();
             case R.id.usageGraph:
                 Toast.makeText(this, "Usage Graph Selected!", Toast.LENGTH_SHORT).show();
                 break;
@@ -373,6 +376,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    private void openNotificationPreferencesDialog(){
+        
     }
 
     private void sortByPriority(boolean ascendant) {

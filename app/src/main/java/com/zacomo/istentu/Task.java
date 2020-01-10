@@ -126,7 +126,7 @@ public class Task {
                     date = DateFormat.getDateInstance(DateFormat.SHORT).format(doneDate.getTime());
                     time = DateFormat.getTimeInstance(DateFormat.SHORT).format(doneDate.getTime());
                 }
-                statusString = "Completato il " + date + " alle " + time + "\n" + prova;
+                statusString = "Completato in data\n" + date + " alle " + time + "\n" + prova;
                 break;
         }
         return statusString;
