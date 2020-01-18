@@ -61,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
 
+    private RecyclerView recyclerView;
+
     private Bundle classBundle;
 
 
@@ -84,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //è importante che sia dopo l'inizializzazione dei task
         //init notifications
         addButton = findViewById(R.id.fabAdd);
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
 
         filteredTasks = new ArrayList<>();
 
@@ -107,6 +109,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initRecyclerView(recyclerView, adapterAllTasks);
 
         addButton.setOnClickListener(this);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Toast.makeText(this, "Activity resumed!", Toast.LENGTH_SHORT).show();
+        mTasks = tasksFH.readData("TaskList");
+        adapterAllTasks = new RecyclerViewAdapter(this, mTasks, tasksFH, MainActivity.this);
+        initRecyclerView(recyclerView, adapterAllTasks);
 
     }
 
@@ -240,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         savedInstanceState.putString("taskDueDate", date);
         savedInstanceState.putString("taskDueTime", time);
 
-        //dovrebbe impostare come posizione del task la sua posizione in mtasks
+        //dovrebbe impostare come posizione del task la sua posizione in mTasks
         savedInstanceState.putInt("taskPosition", mTasks.indexOf(mTask));
 
         AddDialog addDialog = new AddDialog();
@@ -566,10 +578,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void notifyChannel1(View v){
+        //ciclo for su size di mTasks
+
+        //l'id dev'essere unico se voglio mandare più notifiche contemporaneamente da qui
+        //se voglio cambiare o eliminare una notifica devo usare l'id corrispondente
+        notificationManager.notify(1,createNotification(0));
+    }
+
+    private Notification createNotification(int position){
+
         //for che imposta notifiche per tutti i task
         //iterare su posizioni task in mTask e gestire id notifiche di conseguenza
-        String title = "Nome Task Qui?";
-        String message = "Nome Task scade oggi!";
+        String title = "Hey!";
+        String message = mTasks.get(position).getTaskName() + " scade oggi!";
 
         Intent broadcastIntent = new Intent(this, NotificationReceiver.class);
         broadcastIntent.putExtra("toastMessage",message);
@@ -578,7 +599,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 0,broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent activityIntent = new Intent(this, PostponeTaskActivity.class);
-        activityIntent.putExtra("position",0);
+        activityIntent.putExtra("position",position);
         activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         //wrapper per poter passare l'intent alla notifica
         PendingIntent contentIntent = PendingIntent.getActivity(this,
@@ -597,8 +618,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setAutoCancel(true)
                 .addAction(R.drawable.ic_watch_later_black_24dp, "Toast", actionIntent)
                 .build();
-        //l'id dev'essere unico se voglio mandare più notifiche contemporaneamente da qui
-        //se voglio cambiare o eliminare una notifica devo usare l'id corrispondente
-        notificationManager.notify(1,notification);
+
+        return notification;
     }
 }
