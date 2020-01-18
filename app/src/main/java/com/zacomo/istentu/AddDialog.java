@@ -119,6 +119,7 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
                         String sClass ="";
                         if (spinnerInsertClass.getSelectedItem() != null)
                             sClass = spinnerInsertClass.getSelectedItem().toString();
+
                         Task newTask = new Task(editTextInsertTaskName.getText().toString(),
                                 editTextInsertTaskDescription.getText().toString(),
                                 spinnerInsertPriority.getSelectedItemPosition() + 1,
@@ -220,12 +221,14 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
         // con priority funziona perchè uso numeri spinnerInsertClass;
         spinnerClassAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerInsertClass.setAdapter(spinnerClassAdapter);
+
         if (savedInstanceState.getString("taskClass") != null){
             spinnerInsertClass.setSelection(spinnerClassAdapter.getPosition(savedInstanceState.getString("taskClass")));
         }
 
         editTextInsertTaskDescription.setText(savedInstanceState.getString("taskDescription"));
-        textViewDate.setText(savedInstanceState.getString("taskDue"));
+        textViewDate.setText(savedInstanceState.getString("taskDueDate"));
+        textViewTime.setText(savedInstanceState.getString("taskDueTime"));
     }
 
     public void setBundle(Bundle bundle){

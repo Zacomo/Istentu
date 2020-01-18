@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -233,12 +234,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         savedInstanceState.putInt("taskPriority", mTask.getTaskPriority());
         savedInstanceState.putString("taskClass", mTask.getTaskClass());
 
-        int month = mTask.getTaskDue().getInstance().get(Calendar.MONTH);
-        month++;
-        String date = mTask.getTaskDue().getInstance().get(Calendar.YEAR) + "/" + month
-                    + "/" + mTask.getTaskDue().getInstance().get(Calendar.DAY_OF_MONTH);
+        String date = DateFormat.getDateInstance(DateFormat.SHORT).format(mTask.getTaskDue().getTime());
+        String time = DateFormat.getTimeInstance(DateFormat.SHORT).format(mTask.getTaskDue().getTime());
 
-        savedInstanceState.putString("taskDue", date);
+        savedInstanceState.putString("taskDueDate", date);
+        savedInstanceState.putString("taskDueTime", time);
 
         //dovrebbe impostare come posizione del task la sua posizione in mtasks
         savedInstanceState.putInt("taskPosition", mTasks.indexOf(mTask));
