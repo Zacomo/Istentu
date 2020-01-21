@@ -12,8 +12,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -283,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.notificationPreferences:
                 Toast.makeText(this, "Notification Preferences Selected!", Toast.LENGTH_SHORT).show();
                 //potrei estrapolare testo task e passarlo come parametro di sendOnChannel1
-                notifyChannel1(findViewById(R.id.drawerLayout));
+                createNotifications(findViewById(R.id.drawerLayout));
                 //openNotificationPreferencesDialog();
             case R.id.usageGraph:
                 Toast.makeText(this, "Usage Graph Selected!", Toast.LENGTH_SHORT).show();
@@ -577,48 +579,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void notifyChannel1(View v){
-        //ciclo for su size di mTasks
+    public void createNotifications(View v){
+        //for che imposta notifiche per tutti i task
+        //iterare su posizioni task in mTask e gestire id notifiche di conseguenza
 
         //l'id dev'essere unico se voglio mandare più notifiche contemporaneamente da qui
         //se voglio cambiare o eliminare una notifica devo usare l'id corrispondente
-        notificationManager.notify(1,createNotification(0));
+        for (int i = 0; i < mTasks.size(); i++)
+            createAlarm(i);
     }
 
-    private Notification createNotification(int position){
+    private void createAlarm(int position){
 
-        //for che imposta notifiche per tutti i task
-        //iterare su posizioni task in mTask e gestire id notifiche di conseguenza
-        String title = "Hey!";
-        String message = mTasks.get(position).getTaskName() + " scade oggi!";
 
-        Intent broadcastIntent = new Intent(this, NotificationReceiver.class);
-        broadcastIntent.putExtra("toastMessage",message);
-        //FLAG_UPDATE_CURRENT indica che se viene creato un nuovo intent, il messaggio viene agggiornato
-        PendingIntent actionIntent = PendingIntent.getBroadcast(this,
-                0,broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlertReceiver.class);
+        //così passo la posizione del task al receiver
+        intent.putExtra("position",position);
 
-        Intent activityIntent = new Intent(this, PostponeTaskActivity.class);
-        activityIntent.putExtra("position",position);
-        activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        //wrapper per poter passare l'intent alla notifica
-        PendingIntent contentIntent = PendingIntent.getActivity(this,
-                0, activityIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        //passo nome task al receiver
+        intent.putExtra("name",mTasks.get(position).getTaskName());
 
-        //Si possono avere fino a 3 actionbutton (.addAction)
-        //.setWhen e .setShowWhen
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
-                .setSmallIcon(R.drawable.ic_wb_incandescent_black_24dp)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_REMINDER)
-                .setColor(ContextCompat.getColor(this,R.color.colorPrimary))
-                .setContentIntent(contentIntent)
-                .setAutoCancel(true)
-                .addAction(R.drawable.ic_watch_later_black_24dp, "Toast", actionIntent)
-                .build();
+        //requestCode forse dev'essere diverso per ogni task altrimenti non ricevo ogni notifica
+        //il secondo zero indica il tipo di intent (flag)
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, position, intent, 0);
 
-        return notification;
+        //da sostituire 0 con posizione task per allarme
+       // Calendar c = Calendar.getInstance();
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, mTasks.get(position).getTaskDue().getTimeInMillis(), pendingIntent);
+
+        //alarmManager.setExact(AlarmManager.RTC_WAKEUP, mTasks.get(position).getTaskDue().getTimeInMillis(), pendingIntent);
+
+        Toast.makeText(this, mTasks.get(position).getTaskDue().getTime().toString(), Toast.LENGTH_SHORT).show();
     }
+
+    public void cancelAlarm(int position){
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlertReceiver.class);
+
+        //requestCode forse dev'essere diverso per ogni task altrimenti non ricevo ogni notifica
+        //il secondo zero indica il tipo di intent (flag)
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+
+        alarmManager.cancel(pendingIntent);
+   }
 }

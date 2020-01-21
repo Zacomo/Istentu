@@ -176,7 +176,7 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
         //Cambio data taskDue senza cambiare ora
-        taskDue.set(year,month,dayOfMonth,taskDue.get(Calendar.HOUR_OF_DAY),taskDue.get(Calendar.MINUTE));
+        taskDue.set(year,month,dayOfMonth,taskDue.get(Calendar.HOUR_OF_DAY),taskDue.get(Calendar.MINUTE),0);
 
         //month incrementato di uno perchè il conteggio inizia da 0 (Gen == 0)
         ++month;
@@ -196,7 +196,7 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         //Cambio ora taskDue senza cambiare data
-        taskDue.set(taskDue.get(Calendar.YEAR),taskDue.get(Calendar.MONTH),taskDue.get(Calendar.DAY_OF_MONTH),hourOfDay,minute);
+        taskDue.set(taskDue.get(Calendar.YEAR),taskDue.get(Calendar.MONTH),taskDue.get(Calendar.DAY_OF_MONTH),hourOfDay,minute,0);
         String h,m;
         if (hourOfDay < 10)
             h = "0"+hourOfDay;

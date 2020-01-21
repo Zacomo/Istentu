@@ -128,14 +128,14 @@ public class PostponeTaskActivity extends AppCompatActivity implements DatePicke
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        newDate.set(year,month,dayOfMonth,newDate.get(Calendar.HOUR_OF_DAY),newDate.get(Calendar.MINUTE));
+        newDate.set(year,month,dayOfMonth,newDate.get(Calendar.HOUR_OF_DAY),newDate.get(Calendar.MINUTE),0);
 
         textViewDate.setText(DateFormat.getDateInstance(DateFormat.SHORT).format(newDate.getTime()));
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        newDate.set(newDate.get(Calendar.YEAR),newDate.get(Calendar.MONTH),newDate.get(Calendar.DAY_OF_MONTH),hourOfDay,minute);
+        newDate.set(newDate.get(Calendar.YEAR),newDate.get(Calendar.MONTH),newDate.get(Calendar.DAY_OF_MONTH),hourOfDay,minute,0);
         textViewTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(newDate.getTime()));
     }
 }
