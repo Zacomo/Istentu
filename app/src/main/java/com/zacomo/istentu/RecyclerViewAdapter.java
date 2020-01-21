@@ -129,6 +129,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             public void onClick(DialogInterface dialog, int which) {
                 if (tasksFH!=null){
 
+                    //elimino la notifica per il task che cancello
+                    mainActivity.cancelAlarm(position);
+
                     Toast.makeText(mContext, "Fatto!", Toast.LENGTH_SHORT).show();
                     Task toRemove = recViewTasks.get(position);
                     recViewTasks.remove(position);

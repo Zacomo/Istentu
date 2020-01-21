@@ -11,6 +11,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
 import static com.zacomo.istentu.BaseApp.CHANNEL_1_ID;
 
 public class AlertReceiver extends BroadcastReceiver {
@@ -33,12 +34,36 @@ public class AlertReceiver extends BroadcastReceiver {
         if (position > -1) {
 
             //creo intent per aprire activity di rinvio task; conterrà info task da passare a PostponeTaskActivity
-            Intent activityIntent = new Intent(context, PostponeTaskActivity.class);
-            activityIntent.putExtra("position", position);
-            activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            Intent postponeActivityIntent = new Intent(context, PostponeTaskActivity.class);
+            postponeActivityIntent.putExtra("position", position);
+            postponeActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             //wrapper per poter passare l'intent alla notifica
-            PendingIntent actionIntent = PendingIntent.getActivity(context,
-                    0, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            //position è l'id request
+            PendingIntent postponeActionIntent = PendingIntent.getActivity(context,
+                    position, postponeActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            //intent per impostare task come "in corso"
+            Intent setRunningIntent = new Intent(context, MainActivity.class);
+            //setType serve per distinguere questo intent da quello di done, altrimenti sono considerati uguali
+            //e l'intent definito dopo sovrascrive quello precedente, quando si usa un pendingIntent
+            //https://stackoverflow.com/questions/21652895/pendingintent-from-second-action-overwrites-the-first-action-and-the-contentinte
+            setRunningIntent.setType("runningIntent");
+            setRunningIntent.putExtra("action","setRunning");
+            setRunningIntent.putExtra("position", position);
+            setRunningIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP);
+            //position è l'id request
+            PendingIntent setRunningActionIntent = PendingIntent.getActivity(context,position,setRunningIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            //intent per impostare task come "completato"
+            Intent setDoneIntent = new Intent(context, MainActivity.class);
+            setDoneIntent.setType("doneIntent");
+            setDoneIntent.putExtra("action","setDone");
+            setDoneIntent.putExtra("position",position);
+            setDoneIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP);
+            //position è l'id request
+            PendingIntent setDoneActionIntent = PendingIntent.getActivity(context, position, setDoneIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
             Notification notification = new NotificationCompat.Builder(context, CHANNEL_1_ID)
                     .setSmallIcon(R.drawable.ic_wb_incandescent_black_24dp)
                     .setContentTitle(title)
@@ -47,13 +72,13 @@ public class AlertReceiver extends BroadcastReceiver {
                     .setCategory(NotificationCompat.CATEGORY_REMINDER)
                     .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
                     .setAutoCancel(true)
-                    .addAction(R.drawable.ic_watch_later_black_24dp, "Rinvia", actionIntent)
+                    .addAction(R.drawable.ic_watch_later_black_24dp, "Rinvia", postponeActionIntent)
+                    .addAction(R.drawable.ic_autorenew_black_24dp, "In corso", setRunningActionIntent)
+                    .addAction(R.drawable.ic_done_black_24dp, "Fatto", setDoneActionIntent)
                     .build();
 
             //mando effettivamente la notifica
             notificationManager.notify(position, notification);
-
-            Toast.makeText(context, "NotificaRicevuta", Toast.LENGTH_SHORT).show();
         }
     }
 }

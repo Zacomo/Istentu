@@ -69,6 +69,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent.hasExtra("action")){
+
+            int position = intent.getIntExtra("position",-1);
+            if (intent.getStringExtra("action").equals("setRunning") && position > -1){
+                //chiamo metodo setRunning
+                setRunning(mTasks.get(position));
+                Toast.makeText(this, "In corso premuto", Toast.LENGTH_SHORT).show();
+            }
+            else if (intent.getStringExtra("action").equals("setDone") && position > -1){
+                //chiamo metodo setDone
+                setDone(mTasks.get(position));
+                Toast.makeText(this, "Fatto premuto", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -117,11 +136,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        Toast.makeText(this, "Activity resumed!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Activity resumed!", Toast.LENGTH_SHORT).show();
         mTasks = tasksFH.readData("TaskList");
         adapterAllTasks = new RecyclerViewAdapter(this, mTasks, tasksFH, MainActivity.this);
         initRecyclerView(recyclerView, adapterAllTasks);
-
     }
 
     @Override
@@ -192,6 +210,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void moreInfoDialog(final Task mTask){
+        Toast.makeText(this, Integer.toString(mTask.getTaskPosition()), Toast.LENGTH_SHORT).show();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         //builder.setTitle(mTask.getTaskName());
         builder.setTitle("Cosa vuoi fare con "+ "\""+mTask.getTaskName()+"\""+"?");
@@ -207,25 +226,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 modifyDialog(mTask);
                                 break;
                             case 1:
-                                mTask.setStatus(1);
-                                mTask.setDoneDate(null);
-                                adapterAllTasks.notifyDataSetChanged();
-                                adapterFilterTasks.notifyDataSetChanged();
+                                setRunning(mTask);
                                 break;
                             case 2:
-                                mTask.setStatus(2);
-                                mTask.setDoneDate(Calendar.getInstance());
-                                adapterAllTasks.notifyDataSetChanged();
-                                adapterFilterTasks.notifyDataSetChanged();
+                                setDone(mTask);
                                 break;
                             case 3:
                                 mTask.setStatus(0);
                                 mTask.setDoneDate(null);
                                 adapterAllTasks.notifyDataSetChanged();
                                 adapterFilterTasks.notifyDataSetChanged();
+                                tasksFH.writeData(mTasks,"TaskList");
                                 break;
                         }
-                        tasksFH.writeData(mTasks,"TaskList");
                     }
                 });
         builder.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
@@ -285,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.notificationPreferences:
                 Toast.makeText(this, "Notification Preferences Selected!", Toast.LENGTH_SHORT).show();
                 //potrei estrapolare testo task e passarlo come parametro di sendOnChannel1
-                createNotifications(findViewById(R.id.drawerLayout));
+                createAllAlarms(findViewById(R.id.drawerLayout));
                 //openNotificationPreferencesDialog();
             case R.id.usageGraph:
                 Toast.makeText(this, "Usage Graph Selected!", Toast.LENGTH_SHORT).show();
@@ -579,7 +592,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void createNotifications(View v){
+    private void setRunning(Task mTask){
+        mTask.setStatus(1);
+        mTask.setDoneDate(null);
+        adapterAllTasks.notifyDataSetChanged();
+        adapterFilterTasks.notifyDataSetChanged();
+
+        tasksFH.writeData(mTasks,"TaskList");
+    }
+
+    private void setDone(Task mTask){
+        mTask.setStatus(2);
+        mTask.setDoneDate(Calendar.getInstance());
+        adapterAllTasks.notifyDataSetChanged();
+        adapterFilterTasks.notifyDataSetChanged();
+
+        tasksFH.writeData(mTasks,"TaskList");
+    }
+
+    public void createAllAlarms(View v){
         //for che imposta notifiche per tutti i task
         //iterare su posizioni task in mTask e gestire id notifiche di conseguenza
 
@@ -610,7 +641,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //alarmManager.setExact(AlarmManager.RTC_WAKEUP, mTasks.get(position).getTaskDue().getTimeInMillis(), pendingIntent);
 
-        Toast.makeText(this, mTasks.get(position).getTaskDue().getTime().toString(), Toast.LENGTH_SHORT).show();
     }
 
     public void cancelAlarm(int position){
@@ -620,7 +650,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //requestCode forse dev'essere diverso per ogni task altrimenti non ricevo ogni notifica
         //il secondo zero indica il tipo di intent (flag)
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, position, intent, 0);
 
         alarmManager.cancel(pendingIntent);
    }
