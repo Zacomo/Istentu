@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -282,6 +283,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
         switch (menuItem.getItemId()){
             case R.id.sort:
                 Toast.makeText(this, "Sort Selected!", Toast.LENGTH_SHORT).show();
@@ -304,8 +306,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //potrei estrapolare testo task e passarlo come parametro di sendOnChannel1
                 //createAllAlarms(findViewById(R.id.drawerLayout));
                 openNotificationPreferencesDialog();
+                break;
             case R.id.usageGraph:
                 Toast.makeText(this, "Usage Graph Selected!", Toast.LENGTH_SHORT).show();
+                openUsageGraphActivity();
                 break;
             case R.id.info:
                 Toast.makeText(this, "Info Selected!", Toast.LENGTH_SHORT).show();
@@ -313,7 +317,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
-        return false;
+        navigationView.setCheckedItem(menuItem.getItemId());
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     private void openSortDialog(){
@@ -701,5 +708,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
+   }
+
+   public void openUsageGraphActivity(){
+        Intent intent = new Intent(this, UsageGraphActivity.class);
+        startActivity(intent);
    }
 }
