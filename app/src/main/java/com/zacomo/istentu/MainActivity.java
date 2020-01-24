@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //aggiorno la posizione del task modificato che sarà size()
             //newTask.setTaskPosition(mTasks.size());
 
-            //aggiungo il task
+            //aggiungo il task nella posizione in cui si trovava
             mTasks.add(newTask.getTaskPosition(), newTask);
             if (filteredTasks.size() > 0 && (filteredTasks.get(0).getTaskClass().equals(newTask.getTaskClass())))
                 filteredTasks.add(newTask);
@@ -193,6 +193,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (filteredTasks.size() > 0 && (filteredTasks.get(0).getTaskClass().equals(newTask.getTaskClass())))
                 filteredTasks.add(newTask);
         }
+
+        //se il task è nuovo, viene creata una nuova notifica che ha per id la posizione del task
+        //se il task viene modificato, viene aggiornata la notifica (la data potrebbe essere cambiata)
+        createAlarm(newTask.getTaskPosition());
 
         //aggiorno la recyclerView
         tasksFH.writeData(mTasks,"TaskList");
@@ -298,8 +302,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.notificationPreferences:
                 Toast.makeText(this, "Notification Preferences Selected!", Toast.LENGTH_SHORT).show();
                 //potrei estrapolare testo task e passarlo come parametro di sendOnChannel1
-                createAllAlarms(findViewById(R.id.drawerLayout));
-                //openNotificationPreferencesDialog();
+                //createAllAlarms(findViewById(R.id.drawerLayout));
+                openNotificationPreferencesDialog();
             case R.id.usageGraph:
                 Toast.makeText(this, "Usage Graph Selected!", Toast.LENGTH_SHORT).show();
                 break;
@@ -423,7 +427,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void openNotificationPreferencesDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Filtro notifiche per priorità");
+        builder.setMessage("Scegli la priorità minima per ricevere una notifica");
 
+        final Spinner spinner = new Spinner(this);
+
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.priority_values));
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+        builder.setView(spinner);
+
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Azioni per filtrare recyclerview, da implementare anche caso "Tutte"
+                filterAlarms(spinner.getSelectedItemPosition()+1);
+                //Toast.makeText(MainActivity.this, Integer.toString(spinner.getSelectedItemPosition()), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     private void sortByPriority(boolean ascendant) {
@@ -593,6 +625,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setRunning(Task mTask){
+        cancelAlarm(mTask.getTaskPosition());
         mTask.setStatus(1);
         mTask.setDoneDate(null);
         adapterAllTasks.notifyDataSetChanged();
@@ -602,6 +635,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setDone(Task mTask){
+        cancelAlarm(mTask.getTaskPosition());
         mTask.setStatus(2);
         mTask.setDoneDate(Calendar.getInstance());
         adapterAllTasks.notifyDataSetChanged();
@@ -653,5 +687,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, position, intent, 0);
 
         alarmManager.cancel(pendingIntent);
+   }
+
+   public void filterAlarms(int priority){
+        //affinchè il filtro ripristini gli alarm cancellati quando si passa da una priorità più alta
+        //a una più bassa, occorre usare anche createAlarm, anche se per alcuni task non serve
+       if (priority > -1 && priority < 6){
+            for (int i = 0; i < mTasks.size(); i++) {
+                if (mTasks.get(i).getTaskPriority() < priority)
+                    cancelAlarm(i);
+                else
+                    createAlarm(i);
+            }
+        }
+
    }
 }
