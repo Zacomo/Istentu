@@ -19,6 +19,11 @@
         <item>Discendente</item>
     </string-array>
 
+    <string-array name="chart_types">
+        <item>Pie chart priority</item>
+        <item>Pie chart task status</item>
+    </string-array>
+
     <string name="drawerOpen">drawerOpen</string>
     <string name="drawerClose">drawerClose</string>
 

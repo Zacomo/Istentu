@@ -7,12 +7,32 @@
     tools:context=".UsageGraphActivity">
 
     <com.anychart.AnyChartView
-        android:id="@+id/anyChartView"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:id="@+id/anyChartViewPriority"
+        android:layout_width="400dp"
+        android:layout_height="450dp"
         android:layout_marginTop="106dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.anychart.AnyChartView
+        android:id="@+id/anyChartViewStatus"
+        android:layout_width="400dp"
+        android:layout_height="450dp"
+        android:layout_marginTop="106dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <Spinner
+        android:id="@+id/spinnerChartType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:entries="@array/chart_types"
+        app:layout_constraintTop_toBottomOf="@+id/anyChartViewPriority"
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
