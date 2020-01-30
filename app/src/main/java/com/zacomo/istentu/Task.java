@@ -1,11 +1,7 @@
 package com.zacomo.istentu;
 
-import android.icu.text.TimeZoneFormat;
-
 import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
 
 public class Task {
 

@@ -5,16 +5,13 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlarmManager;
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -38,7 +35,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
-import static com.zacomo.istentu.BaseApp.CHANNEL_1_ID;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AddDialog.AddDialogListener, NavigationView.OnNavigationItemSelectedListener, SortDialog.SortDialogListener {
 

@@ -15,7 +15,6 @@ import com.anychart.chart.common.dataentry.DataEntry;
 import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Pie;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
