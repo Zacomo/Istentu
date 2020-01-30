@@ -36,12 +36,8 @@ import java.util.Collections;
 import java.util.Comparator;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, AddDialog.AddDialogListener, NavigationView.OnNavigationItemSelectedListener, SortDialog.SortDialogListener {
+public class MainActivity extends AppCompatActivity implements AddDialog.AddDialogListener, NavigationView.OnNavigationItemSelectedListener, SortDialog.SortDialogListener {
 
-    //NotificationManagerCompat utilizza dei controlli per garantire la retrocompatibilità delle notifiche
-    private NotificationManagerCompat notificationManager;
-
-    private static final String TAG = "MainActivity";
     private ArrayList<Task> mTasks;
     private FloatingActionButton addButton;
 
@@ -62,10 +58,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private RecyclerView recyclerView;
 
-    private Bundle classBundle;
-
 
     @Override
+    // Qui gestisco le azioni da intraprendere quando si preme sui button di una notifica
+    // intent contiene la l'extra "action" che con una stringa indica quale pulsante è stato premuto
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (intent.hasExtra("action")){
@@ -88,29 +84,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(TAG, "OnCreate: started");
 
-        notificationManager = NotificationManagerCompat.from(this);
-
+        //inizializzo i file helper che salvano i vettori task e classi nelle sharedPreferences
         tasksFH = new TaskFileHelper(this);
         classesFH = new StringFileHelper(this);
 
         spinnerClasses = classesFH.readData("ClassList");
-        classBundle = new Bundle();
+        //classBundle = new Bundle();
 
-        classBundle.putStringArrayList("ClassList",spinnerClasses);
+
+        //classBundle.putStringArrayList("ClassList",spinnerClasses);
         mTasks = tasksFH.readData("TaskList");
 
-        //è importante che sia dopo l'inizializzazione dei task
-        //init notifications
         addButton = findViewById(R.id.fabAdd);
         recyclerView = findViewById(R.id.recyclerView);
 
         filteredTasks = new ArrayList<>();
 
+        //inizializzo due adapter: uno per il task con tutti i vettori, l'altro con i vettori filtrati
         adapterAllTasks = new RecyclerViewAdapter(this, mTasks, tasksFH, MainActivity.this);
         adapterFilterTasks = new RecyclerViewAdapter(this, mTasks, filteredTasks, tasksFH, MainActivity.this);
 
+        //inizializzazione del layout del drawer
         drawerLayout = findViewById(R.id.drawerLayout);
         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.navigationView);
@@ -127,41 +122,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //in questo modo i task vengono visualizzati sempre in ordine di scadenza
         sortByDate(true);
 
+        //inizializzazione recyclerview
         initRecyclerView(recyclerView, adapterAllTasks);
 
-        addButton.setOnClickListener(this);
-
+        //gestisco click sul fab per aggiungere una nuova attività
+        addButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                addBtnDialog();
+            }
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //Toast.makeText(this, "Activity resumed!", Toast.LENGTH_SHORT).show();
+        //aggiorno la Recyclerview perchè potrebbe essere cambiata se è stata avviata l'activity Postpone
         mTasks = tasksFH.readData("TaskList");
         adapterAllTasks = new RecyclerViewAdapter(this, mTasks, tasksFH, MainActivity.this);
         initRecyclerView(recyclerView, adapterAllTasks);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            //pressing add floating button
-            case R.id.fabAdd:
-                addBtnDialog();
-                break;
-        }
-    }
-
+    //Questo metodo si occupa di gestire il dialog di aggiunta di un Task
     private void addBtnDialog() {
 
+        //Questo bundle, con le classi, lo passo come argomento al dialogo di aggiunta/modifica task
+        //in modo da popolare correttamente lo spinner delle classi
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList("ClassList",spinnerClasses);
+
         AddDialog addDialog = new AddDialog();
-        addDialog.setArguments(classBundle);
+        addDialog.setArguments(bundle);
         addDialog.show(getSupportFragmentManager(), "Add dialog");
 
     }
-    //metodo che inserisce nel vettore il task (nuovo o modificato che sia)
 
     @Override
+    //Implementazione del metodo dichiarato in AddDialog. Aggiunge un nuovo task o aggiorna quello modificato
     public void insertData(Task newTask) {
 
         if (newTask.getTaskPosition() != -1){
@@ -206,17 +202,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initRecyclerView(RecyclerView recyclerView, RecyclerViewAdapter adapter){
-        Log.d(TAG, "initRecyclerView: initRecyclerView");
-
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     }
 
+    //Apre, dopo il tap su un task, un dialogo in cui è possibile scegliere se modificare il task o cambiarne lo stato
     public void moreInfoDialog(final Task mTask){
-        Toast.makeText(this, Integer.toString(mTask.getTaskPosition()), Toast.LENGTH_SHORT).show();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        //builder.setTitle(mTask.getTaskName());
         builder.setTitle("Cosa vuoi fare con "+ "\""+mTask.getTaskName()+"\""+"?");
         builder.setCancelable(false);
 
@@ -236,11 +229,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 setDone(mTask);
                                 break;
                             case 3:
-                                mTask.setStatus(0);
-                                mTask.setDoneDate(null);
-                                adapterAllTasks.notifyDataSetChanged();
-                                adapterFilterTasks.notifyDataSetChanged();
-                                tasksFH.writeData(mTasks,"TaskList");
+                                setWaiting(mTask);
                                 break;
                         }
                     }
@@ -253,61 +242,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
         builder.create().show();
     }
-    //ora può essere private
 
-    public void modifyDialog(Task mTask){
+    //Configura un bundle da passare come argomento per l'Add dialog in modo che sia un dialogo di modifica
+    private void modifyDialog(Task mTask){
 
-        //ToDo: si potrebbe sostituire tutto con una stringa Json
-
-        Bundle savedInstanceState = new Bundle();
-        savedInstanceState.putString("taskName", mTask.getTaskName());
-        savedInstanceState.putString("taskDescription", mTask.getTaskDescription());
-        savedInstanceState.putInt("taskPriority", mTask.getTaskPriority());
-        savedInstanceState.putString("taskClass", mTask.getTaskClass());
+        Bundle bundle = new Bundle();
+        bundle.putString("taskName", mTask.getTaskName());
+        bundle.putString("taskDescription", mTask.getTaskDescription());
+        bundle.putInt("taskPriority", mTask.getTaskPriority());
+        bundle.putString("taskClass", mTask.getTaskClass());
 
         String date = DateFormat.getDateInstance(DateFormat.SHORT).format(mTask.getTaskDue().getTime());
         String time = DateFormat.getTimeInstance(DateFormat.SHORT).format(mTask.getTaskDue().getTime());
 
-        savedInstanceState.putString("taskDueDate", date);
-        savedInstanceState.putString("taskDueTime", time);
+        bundle.putString("taskDueDate", date);
+        bundle.putString("taskDueTime", time);
 
         //dovrebbe impostare come posizione del task la sua posizione in mTasks
-        savedInstanceState.putInt("taskPosition", mTasks.indexOf(mTask));
+        bundle.putInt("taskPosition", mTasks.indexOf(mTask));
+
+        bundle.putStringArrayList("ClassList", spinnerClasses);
 
         AddDialog addDialog = new AddDialog();
-        addDialog.setArguments(classBundle);
-        addDialog.setBundle(savedInstanceState);
+        addDialog.setArguments(bundle);
         addDialog.show(getSupportFragmentManager(), "Modify dialog");
     }
 
     @Override
+    //Gestisce il tap sulle voci della navigation bar laterale
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
         switch (menuItem.getItemId()){
             case R.id.sort:
-                Toast.makeText(this, "Sort Selected!", Toast.LENGTH_SHORT).show();
                 openSortDialog();
                 break;
             case R.id.filter:
-                Toast.makeText(this, "Filter Selected!", Toast.LENGTH_SHORT).show();
                 openFilterDialog();
                 break;
             case R.id.addClass:
-                Toast.makeText(this, "Add Class Selected!", Toast.LENGTH_SHORT).show();
                 openAddClassDialog();
                 break;
             case R.id.removeClass:
-                Toast.makeText(this, "Remove Class Selected!", Toast.LENGTH_SHORT).show();
                 openRemoveClassDialog();
                 break;
             case R.id.notificationPreferences:
-                Toast.makeText(this, "Notification Preferences Selected!", Toast.LENGTH_SHORT).show();
-                //potrei estrapolare testo task e passarlo come parametro di sendOnChannel1
-                //createAllAlarms(findViewById(R.id.drawerLayout));
                 openNotificationPreferencesDialog();
                 break;
             case R.id.usageGraph:
-                Toast.makeText(this, "Usage Graph Selected!", Toast.LENGTH_SHORT).show();
                 openUsageGraphActivity();
                 break;
             case R.id.info:
@@ -322,11 +303,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return true;
     }
 
+    //Apre un dialog per ordinare i task della recyclerview
     private void openSortDialog(){
         SortDialog sortDialog = new SortDialog();
         sortDialog.show(getSupportFragmentManager(),"sort_dialog");
     }
 
+    //Apre un dialog per filtrare i task della recyclerview
     private void openFilterDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Filtra per classe");
@@ -336,13 +319,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ArrayList<String> filterClasses = new ArrayList<>();
         if (spinnerClasses != null)
-            filterClasses = (ArrayList<String>) spinnerClasses.clone();
+            filterClasses = new ArrayList<>(spinnerClasses);
 
+        //Voglio poter filtrare anche secondo questi criteri, non solo la classe dei task
         filterClasses.add("Non completati");
         filterClasses.add("Completati");
         filterClasses.add("Tutte");
 
-        Toast.makeText(this, filterClasses.toString(), Toast.LENGTH_SHORT).show();
         ArrayAdapter<String> spinnerClassesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, filterClasses);
         spinnerClassesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerClassesAdapter);
@@ -351,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-               //Azioni per filtrare recyclerview, da implementare anche caso "Tutte"
+               //Azioni per filtrare recyclerview
                 filterRecycleView(spinner.getSelectedItem().toString().trim());
             }
         });
@@ -368,6 +351,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    //Apre dialog per aggiungere una nuova classe, nome scelto dall'utente tramite EditText
     private void openAddClassDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Nuova classe");
@@ -402,6 +386,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         alertDialog.show();
     }
 
+    //Dialog per rimuovere la classe selezionata (tramite spinner) dalla lista delle classi
     private void openRemoveClassDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Rimuovi classe");
@@ -434,6 +419,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         alertDialog.show();
     }
 
+    //Dialog per cambiare la preferenza delle notifiche (cioè la priorità necessaria per ricevere la notifica)
     private void openNotificationPreferencesDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Filtro notifiche per priorità");
@@ -449,9 +435,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //Azioni per filtrare recyclerview, da implementare anche caso "Tutte"
+                //passo priorità selezionata (ovvero posizione + 1 perchè position parte da 0)
                 filterAlarms(spinner.getSelectedItemPosition()+1);
-                //Toast.makeText(MainActivity.this, Integer.toString(spinner.getSelectedItemPosition()), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -466,8 +451,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         alertDialog.show();
     }
 
+    @Override
+    //Da qui chiamo il metodo di ordinamento richiesto, in base al valore di sType
+    public void sortTasks(Integer sType, Integer sOrder) {
+        //0 priority | 1 Date | 2 Name | 3 Class
+        //0 Ascendente | 1 Discendente
+        boolean ascendant = true;
+
+        if (sOrder > 0)
+            ascendant = false;
+
+        switch (sType){
+            case 0:
+                sortByPriority(ascendant);
+                break;
+            case 1:
+                sortByDate(ascendant);
+                break;
+            case 2:
+                sortByName(ascendant);
+                break;
+        }
+    }
+
+    //Ordino i task nella recyclerview per priorità ascendente o discendente (in base al valore di ascendant)
     private void sortByPriority(boolean ascendant) {
         Comparator<Task> comparator;
+
+        //Definisco il comportamento del comparator in base al valore di ascendant
 
         if (ascendant) {
             comparator = new Comparator<Task>() {
@@ -503,8 +514,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapterFilterTasks.notifyDataSetChanged();
     }
 
+    //Ordino i task nella recyclerview per data di scadenza, da quella più vicina o da quella più lontana (in base ad ascendant)
     private void sortByDate(boolean ascendant){
         Comparator<Task> comparator;
+
+        //Definisco il comportamento del comparator in base al valore di ascendant
 
         if (ascendant) {
             comparator = new Comparator<Task>() {
@@ -539,8 +553,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapterFilterTasks.notifyDataSetChanged();
     }
 
+    //Ordino i task nella recyclerview per Nome (in base al valore di ascendant)
     private void sortByName(boolean ascendant){
         Comparator<Task> comparator;
+
+        //Definisco il comportamento del comparator in base al valore di ascendant
 
         if (ascendant) {
             comparator = new Comparator<Task>() {
@@ -566,38 +583,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapterFilterTasks.notifyDataSetChanged();
     }
 
-    @Override
-    public void sortTasks(Integer sType, Integer sOrder) {
-        //0 priority | 1 Date | 2 Name | 3 Class
-        //0 Ascendant | 1 Descendant
-        boolean ascendant = true;
-
-        if (sOrder > 0)
-            ascendant = false;
-
-        switch (sType){
-            case 0:
-                //Sort by priority
-                sortByPriority(ascendant);
-                break;
-            case 1:
-                //Sort by date
-                sortByDate(ascendant);
-                break;
-            case 2:
-                //Sort by name
-                sortByName(ascendant);
-                break;
-        }
-    }
-
-    private void filterRecycleView(String filterClass){
+    //Filtro la recyclerview in base all'opzione scelta nel dialogo che ha chiamato il metodo (filterName)
+    private void filterRecycleView(String filterName){
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         //resetto il vettore filteredTasks altrimenti compaiono anche task selezionati in precedenza
         filteredTasks.clear();
 
 
-        switch (filterClass){
+        switch (filterName){
             case "Non completati":
                 for (int i = 0; i < mTasks.size(); i++){
                     //status == 2 indica task completati
@@ -621,7 +614,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             default:
                 for (int i = 0; i < mTasks.size(); i++){
-                    if (mTasks.get(i).getTaskClass().equals(filterClass))
+                    if (mTasks.get(i).getTaskClass().equals(filterName))
                         filteredTasks.add(mTasks.get(i));
                 }
 
@@ -631,14 +624,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    //Rimuove da filtered tasks gli elementi rimossi da mTasks, in modo che la view filtrata sia sempre aggiornata
     private void filterConsistency(){
-        //metodo per rimuovere da filtered tasks gli elementi rimossi da mTasks
-        for (int i=0; i < filteredTasks.size(); i++){
+        int i = 0;
+        while (i < filteredTasks.size()){
             if (!mTasks.contains(filteredTasks.get(i)))
                 filteredTasks.remove(i);
+            i++;
         }
     }
 
+    //Imposta lo stato di un task come "in corso"
     private void setRunning(Task mTask){
         cancelAlarm(mTask.getTaskPosition());
         mTask.setStatus(1);
@@ -649,6 +645,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tasksFH.writeData(mTasks,"TaskList");
     }
 
+    //Imposta lo stato di un task come "Completato"
     private void setDone(Task mTask){
         cancelAlarm(mTask.getTaskPosition());
         mTask.setStatus(2);
@@ -659,51 +656,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tasksFH.writeData(mTasks,"TaskList");
     }
 
-    public void createAllAlarms(View v){
-        //for che imposta notifiche per tutti i task
-        //iterare su posizioni task in mTask e gestire id notifiche di conseguenza
+    //Imposta lo stato di un task come "in attesa"
+    private void setWaiting(Task mTask){
+        mTask.setStatus(0);
+        mTask.setDoneDate(null);
+        adapterAllTasks.notifyDataSetChanged();
+        adapterFilterTasks.notifyDataSetChanged();
 
-        //l'id dev'essere unico se voglio mandare più notifiche contemporaneamente da qui
-        //se voglio cambiare o eliminare una notifica devo usare l'id corrispondente
-        for (int i = 0; i < mTasks.size(); i++)
-            createAlarm(i);
+        tasksFH.writeData(mTasks,"TaskList");
     }
 
+    //Crea un alarm (notifica con scadenza) per il task che ha posizione "position" in mTasks
     private void createAlarm(int position){
-
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlertReceiver.class);
-        //così passo la posizione del task al receiver
+
+        //Passo la posizione del task al receiver
         intent.putExtra("position",position);
 
-        //passo nome task al receiver
+        //Passo il nome del task al receiver
         intent.putExtra("name",mTasks.get(position).getTaskName());
 
-        //requestCode forse dev'essere diverso per ogni task altrimenti non ricevo ogni notifica
-        //il secondo zero indica il tipo di intent (flag)
+        //Creo il pendingIntent che fa da wrapper per "intent"
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, position, intent, 0);
 
-        //da sostituire 0 con posizione task per allarme
-       // Calendar c = Calendar.getInstance();
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, mTasks.get(position).getTaskDue().getTimeInMillis(), pendingIntent);
-
-        //alarmManager.setExact(AlarmManager.RTC_WAKEUP, mTasks.get(position).getTaskDue().getTimeInMillis(), pendingIntent);
+        if (alarmManager!= null)
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, mTasks.get(position).getTaskDue().getTimeInMillis(), pendingIntent);
 
     }
 
+    //Data la posizione in mTasks, cancella l'alarm per il task corrispondente
     public void cancelAlarm(int position){
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlertReceiver.class);
 
-        //requestCode forse dev'essere diverso per ogni task altrimenti non ricevo ogni notifica
-        //il secondo zero indica il tipo di intent (flag)
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, position, intent, 0);
 
-        alarmManager.cancel(pendingIntent);
+        if (alarmManager != null)
+            alarmManager.cancel(pendingIntent);
    }
 
+   //Fa in modo che siano attivi solo gli alarm della priorità selezionata
    public void filterAlarms(int priority){
         //affinchè il filtro ripristini gli alarm cancellati quando si passa da una priorità più alta
         //a una più bassa, occorre usare anche createAlarm, anche se per alcuni task non serve
@@ -718,6 +713,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
    }
 
+   //Apre l'activity in cui viene mostrato il grafico di utilizzo
    public void openUsageGraphActivity(){
         Intent intent = new Intent(this, UsageGraphActivity.class);
         startActivity(intent);

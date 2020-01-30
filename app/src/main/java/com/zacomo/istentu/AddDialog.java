@@ -64,20 +64,28 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
         editTextInsertTaskDescription = view.findViewById(R.id.insertTaskDescription);
         textViewDate = view.findViewById(R.id.textViewDate);
         textViewTime = view.findViewById(R.id.textViewTime);
-
         taskDue = Calendar.getInstance();
 
         spinnerClasses = new ArrayList<>();
-        spinnerClasses = getArguments().getStringArrayList("ClassList");
 
-        if (!spinnerClasses.contains("Lavoro"))
+        bundle = getArguments();
+
+        if (bundle != null){
+            //se ho ricevuto una lista di classi nel bundle allora la devo inserire nello spinner
+            if (bundle.containsKey("ClassList"))
+                spinnerClasses = bundle.getStringArrayList("ClassList");
+
+        }
+
+        //Lavoro e casa sono le classi di default; se non sono già presenti le devo aggiungere
+        if (spinnerClasses != null && !spinnerClasses.contains("Lavoro"))
             spinnerClasses.add(0,"Lavoro");
-
-        if (!spinnerClasses.contains("Casa"))
+        if (spinnerClasses != null && !spinnerClasses.contains("Casa"))
             spinnerClasses.add(0,"Casa");
 
         Toast.makeText(getContext(), spinnerClasses.toString(), Toast.LENGTH_SHORT).show();
 
+        // Inizializzazione adapter delle classi
         ArrayAdapter<String> spinnerClassesAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, spinnerClasses);
         spinnerClassesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -98,10 +106,11 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
             }
         });
 
-        if (bundle != null){
-            editTask(bundle, spinnerClassesAdapter);
+        //se è presente un valore con chiave "taskName" significa che addDialog è stato chiamato per modifica
+        if (bundle.containsKey("taskName")){
+            editTask(spinnerClassesAdapter);
         }
-
+        //Impostazione dell'aspetto del dialog
         builder.setView(view)
                 .setTitle(dialogTitle) //titolo finestra di dialogo
                 .setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
@@ -123,7 +132,9 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
                                 spinnerInsertPriority.getSelectedItemPosition() + 1,
                                 taskDue, sClass);
 
-                        if (bundle != null)
+                        //se presente la chiave "taskPosition" allora sono in modifica, pertanto devo
+                        //mantenere la posizione del task pre modifica
+                        if (bundle.containsKey("taskPosition"))
                             newTask.setTaskPosition(bundle.getInt("taskPosition"));
 
                         listener.insertData(newTask);
@@ -209,32 +220,25 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
     }
 
     //metodo da richiamare quando si vuole modificare un task
-    public void editTask(Bundle savedInstanceState, ArrayAdapter<String> spinnerClassAdapter){
-        dialogTitle = "Modifica " + "\"" + savedInstanceState.getString("taskName") + "\"";
-        editTextInsertTaskName.setText(savedInstanceState.getString("taskName"));
+    //si occupa di gestire le apparenze del dialogo di modifica
+    public void editTask(ArrayAdapter<String> spinnerClassAdapter){
+        dialogTitle = "Modifica " + "\"" + bundle.getString("taskName") + "\"";
+        editTextInsertTaskName.setText(bundle.getString("taskName"));
 
         //-1 perchè priorità va da 1 a 5
-        spinnerInsertPriority.setSelection(savedInstanceState.getInt("taskPriority")-1);
+        spinnerInsertPriority.setSelection(bundle.getInt("taskPriority")-1);
 
         // con priority funziona perchè uso numeri spinnerInsertClass;
         spinnerClassAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerInsertClass.setAdapter(spinnerClassAdapter);
 
-        if (savedInstanceState.getString("taskClass") != null){
-            spinnerInsertClass.setSelection(spinnerClassAdapter.getPosition(savedInstanceState.getString("taskClass")));
+        if (bundle.getString("taskClass") != null){
+            spinnerInsertClass.setSelection(spinnerClassAdapter.getPosition(bundle.getString("taskClass")));
         }
 
-        editTextInsertTaskDescription.setText(savedInstanceState.getString("taskDescription"));
-        textViewDate.setText(savedInstanceState.getString("taskDueDate"));
-        textViewTime.setText(savedInstanceState.getString("taskDueTime"));
-    }
-
-    public void setBundle(Bundle bundle){
-        this.bundle = bundle;
-    }
-
-    public Bundle getBundle(){
-        return this.bundle;
+        editTextInsertTaskDescription.setText(bundle.getString("taskDescription"));
+        textViewDate.setText(bundle.getString("taskDueDate"));
+        textViewTime.setText(bundle.getString("taskDueTime"));
     }
 
 }
