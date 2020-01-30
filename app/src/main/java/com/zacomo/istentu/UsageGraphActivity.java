@@ -35,16 +35,24 @@ public class UsageGraphActivity extends AppCompatActivity {
         anyChartViewPriority = findViewById(R.id.anyChartViewPriority);
         anyChartViewStatus = findViewById(R.id.anyChartViewStatus);
 
+
+
         if (mTasks.size() > 0) {
+
+            setUpPriorityPieChart();
+            setUpTaskStatusPieChart();
+
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     switch (position){
                         case 0:
-                            setUpPriorityPieChart();
+                            anyChartViewStatus.setVisibility(View.INVISIBLE);
+                            anyChartViewPriority.setVisibility(View.VISIBLE);
                             break;
                         case 1:
-                            setUpTaskStatusPieChart();
+                            anyChartViewPriority.setVisibility(View.INVISIBLE);
+                            anyChartViewStatus.setVisibility(View.VISIBLE);
                             break;
                         default:
                             break;
@@ -60,9 +68,6 @@ public class UsageGraphActivity extends AppCompatActivity {
     }
 
     private void setUpPriorityPieChart(){
-        anyChartViewStatus.setVisibility(View.INVISIBLE);
-        anyChartViewPriority.setVisibility(View.VISIBLE);
-
         APIlib.getInstance().setActiveAnyChartView(anyChartViewPriority);
 
         Pie pie = AnyChart.pie();
@@ -92,9 +97,6 @@ public class UsageGraphActivity extends AppCompatActivity {
     }
 
     private void setUpTaskStatusPieChart(){
-        anyChartViewPriority.setVisibility(View.INVISIBLE);
-        anyChartViewStatus.setVisibility(View.VISIBLE);
-        
         APIlib.getInstance().setActiveAnyChartView(anyChartViewStatus);
 
         Pie pie = AnyChart.pie();
