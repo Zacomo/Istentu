@@ -128,6 +128,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.bringToFront();
 
+        //in questo modo i task vengono visualizzati sempre in ordine di scadenza
+        sortByDate(true);
+
         initRecyclerView(recyclerView, adapterAllTasks);
 
         addButton.setOnClickListener(this);
