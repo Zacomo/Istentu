@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.setTitle("Cosa vuoi fare con "+ "\""+mTask.getTaskName()+"\""+"?");
         builder.setCancelable(false);
 
-        builder.setItems(new CharSequence[]{"Modifica Task", "Segna come \"in corso\"", "Segna come \"completo\"","Segna come \"in attesa\""}, new DialogInterface.OnClickListener() {
+        builder.setItems(new CharSequence[]{"Modifica Task", "Segna come \"in corso\"", "Segna come \"completato\"","Segna come \"in attesa\""}, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // The 'which' argument contains the index position of the selected item
@@ -342,6 +342,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (spinnerClasses != null)
             filterClasses = (ArrayList<String>) spinnerClasses.clone();
 
+        filterClasses.add("Non completati");
+        filterClasses.add("Completati");
         filterClasses.add("Tutte");
 
         Toast.makeText(this, filterClasses.toString(), Toast.LENGTH_SHORT).show();
@@ -598,32 +600,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //resetto il vettore filteredTasks altrimenti compaiono anche task selezionati in precedenza
         filteredTasks.clear();
 
-        if (!filterClass.equals("Tutte")){
 
-            for (int i = 0; i < mTasks.size(); i++){
-                if (mTasks.get(i).getTaskClass().equals(filterClass))
-                    filteredTasks.add(mTasks.get(i));
-            }
+        switch (filterClass){
+            case "Non completati":
+                for (int i = 0; i < mTasks.size(); i++){
+                    //status == 2 indica task completati
+                    if (mTasks.get(i).getTaskStatus() != 2)
+                        filteredTasks.add(mTasks.get(i));
+                }
 
-            initRecyclerView(recyclerView,adapterFilterTasks);
+                initRecyclerView(recyclerView,adapterFilterTasks);
+                break;
+            case "Completati":
+                for (int i = 0; i < mTasks.size(); i++){
+                    if (mTasks.get(i).getTaskStatus() == 2)
+                        filteredTasks.add(mTasks.get(i));
+                }
 
+                initRecyclerView(recyclerView,adapterFilterTasks);
+                break;
+            case "Tutte":
+                //semplicemente inizializzo la recyclerview con l'adapter di tutti i task (mTasks)
+                initRecyclerView(recyclerView,adapterAllTasks);
+                break;
+            default:
+                for (int i = 0; i < mTasks.size(); i++){
+                    if (mTasks.get(i).getTaskClass().equals(filterClass))
+                        filteredTasks.add(mTasks.get(i));
+                }
+
+                initRecyclerView(recyclerView,adapterFilterTasks);
+                break;
         }
 
-        else{
-            Toast.makeText(this, "Tutte selected", Toast.LENGTH_SHORT).show();
-
-            initRecyclerView(recyclerView,adapterAllTasks);
-        }
-
-        //filteredTasks = updateTaskPositions(filteredTasks);
-
-    }
-
-    private ArrayList<Task> updateTaskPositions(ArrayList<Task> tasks){
-        for (int i=0; i<tasks.size(); i++)
-            tasks.get(i).setTaskPosition(i);
-
-        return tasks;
     }
 
     private void filterConsistency(){
