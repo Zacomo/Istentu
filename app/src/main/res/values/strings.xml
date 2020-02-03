@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Istentu</string>
+    <string name="app_name">Istentapp</string>
     <string-array name="priority_values">
         <item> 1 </item>
         <item> 2 </item>

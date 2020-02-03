@@ -11,7 +11,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:src="@mipmap/ic_launcher"
+            android:src="@drawable/logo_circle"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginStart="16dp"
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/drawerLayout_menu_text"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:textColor="@android:color/white"
             android:textStyle="bold"
             />
