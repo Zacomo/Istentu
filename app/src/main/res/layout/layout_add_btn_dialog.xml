@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
-        android:hint="Inserisci il nome dell'attività"
+        android:hint="@string/addDialog_nameActivityHint"
         android:inputType="text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,7 +28,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:textSize="18sp"
-        android:text="Priorità: "
+        android:text="@string/addDialog_priority_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/insertTaskName" />
 
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Categoria: "
+        android:text="@string/addDialog_class_text"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -67,7 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
         android:layout_marginEnd="16dp"
-        android:text="Scegli una data"
+        android:text="@string/addDialog_date_text"
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/fabDatePicker"
         app:layout_constraintTop_toBottomOf="@+id/insertTaskName" />
@@ -88,9 +88,9 @@
         android:id="@+id/textViewTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Scegli un'ora"
+        android:text="@string/addDialog_time_text"
         android:textSize="18sp"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toStartOf="@+id/fabTimePicker"
         app:layout_constraintTop_toBottomOf="@+id/textViewDate"/>
@@ -104,7 +104,7 @@
         app:layout_constraintTop_toBottomOf="@+id/fabDatePicker"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp"
-        android:layout_marginRight="4dp"
+        android:layout_marginEnd="4dp"
         app:fabSize="mini"/>
 
     <EditText
@@ -113,7 +113,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:hint="Inserisci una descrizione"
+        android:hint="@string/addDialog_descriptionActivity_hint"
         android:inputType="textMultiLine"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewTime" />

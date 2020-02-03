@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
 
     private RecyclerView recyclerView;
 
+    private String doneText,cancelText,notCompletedText,completedText,allText;
 
     @Override
     // Qui gestisco le azioni da intraprendere quando si preme sui button di una notifica
@@ -80,6 +81,12 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        doneText = getString(R.string.done_text);
+        cancelText = getString(R.string.cancel_text);
+        notCompletedText = getString(R.string.mainActivity_filterDialog_notCompleted);
+        completedText = getString(R.string.mainActivity_filterDialog_completed);
+        allText = getString(R.string.mainActivity_filterDialog_all);
 
         //inizializzo i file helper che salvano i vettori task e classi nelle sharedPreferences
         tasksFH = new TaskFileHelper(this);
@@ -193,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
         tasksFH.writeData(mTasks,"TaskList");
         adapterAllTasks.notifyItemInserted(mTasks.indexOf(newTask));
         adapterFilterTasks.notifyDataSetChanged();
-        Toast.makeText(this, "Done!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.mainActivity_insertData_success, Toast.LENGTH_SHORT).show();
     }
 
     private void initRecyclerView(RecyclerView recyclerView, RecyclerViewAdapter adapter){
@@ -205,10 +212,17 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
     //Apre, dopo il tap su un task, un dialogo in cui è possibile scegliere se modificare il task o cambiarne lo stato
     public void moreInfoDialog(final Task mTask){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Cosa vuoi fare con "+ "\""+mTask.getTaskName()+"\""+"?");
+        //recupero la stringa "Cosa fare con" nella lingua corretta
+        String whatTodo = getString(R.string.mainActivity_moreInfoDialog_title);
+        builder.setTitle(whatTodo + "\""+mTask.getTaskName()+"\""+"?");
         builder.setCancelable(false);
 
-        builder.setItems(new CharSequence[]{"Modifica Task", "Segna come \"in corso\"", "Segna come \"completato\"","Segna come \"in attesa\""}, new DialogInterface.OnClickListener() {
+        String modifyTask = getString(R.string.mainActivity_moreInfoDialog_ModifyTask);
+        String setAsRunning = getString(R.string.mainActivity_moreInfoDialog_setAsRunning);
+        String setAsDone = getString(R.string.mainActivity_moreInfoDialog_setAsDone);
+        String setAsWaiting = getString(R.string.mainActivity_moreInfoDialog_setAsWaiting);
+
+        builder.setItems(new CharSequence[]{modifyTask, setAsRunning, setAsDone, setAsWaiting}, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // The 'which' argument contains the index position of the selected item
@@ -229,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
                         }
                     }
                 });
-        builder.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(cancelText, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -304,8 +318,10 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
     //Apre un dialog per filtrare i task della recyclerview
     private void openFilterDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Filtra per classe");
-        builder.setMessage("Scegli la classe da visualizzare");
+        String title = getString(R.string.mainActivity_filterDialog_title);
+        builder.setTitle(title);
+        String message = getString(R.string.mainActivity_filterDialog_message);
+        builder.setMessage(message);
 
         final Spinner spinner = new Spinner(this);
 
@@ -314,24 +330,24 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
             filterClasses = new ArrayList<>(spinnerClasses);
 
         //Voglio poter filtrare anche secondo questi criteri, non solo la classe dei task
-        filterClasses.add("Non completati");
-        filterClasses.add("Completati");
-        filterClasses.add("Tutte");
+        filterClasses.add(notCompletedText);
+        filterClasses.add(completedText);
+        filterClasses.add(allText);
 
         ArrayAdapter<String> spinnerClassesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, filterClasses);
         spinnerClassesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerClassesAdapter);
         builder.setView(spinner);
 
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(doneText, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                //Azioni per filtrare recyclerview
-                filterRecycleView(spinner.getSelectedItem().toString().trim());
+                filterRecycleView(spinner);
             }
         });
 
-        builder.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(cancelText, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -346,13 +362,15 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
     //Apre dialog per aggiungere una nuova classe, nome scelto dall'utente tramite EditText
     private void openAddClassDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Nuova classe");
-        builder.setMessage("Inserisci il nome di una nuova classe:");
+        String title = getString(R.string.mainActivity_addClassDialog_title);
+        String message = getString(R.string.mainActivity_addClassDialog_message);
+        builder.setTitle(title);
+        builder.setMessage(message);
 
         final EditText editText = new EditText(this);
         builder.setView(editText);
 
-        builder.setPositiveButton("Fatto", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(doneText, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String newClass = editText.getText().toString().trim();
@@ -363,11 +381,10 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
                     classesFH.writeData(spinnerClasses,"ClassList");
                 }
                 else
-                    Toast.makeText(MainActivity.this, "Classe già presente!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, R.string.mainActivity_addClassDialog_classAlreadyExists, Toast.LENGTH_SHORT).show();
             }
         });
-
-        builder.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(cancelText, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -381,8 +398,10 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
     //Dialog per rimuovere la classe selezionata (tramite spinner) dalla lista delle classi
     private void openRemoveClassDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Rimuovi classe");
-        builder.setMessage("Scegli la classe da rimuovere:");
+        String title = getString(R.string.mainActivity_removeDialog_title);
+        String message = getString(R.string.mainActivity_removeDialog_message);
+        builder.setTitle(title);
+        builder.setMessage(message);
 
         final Spinner spinner = new Spinner(this);
         ArrayAdapter<String> spinnerClassesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerClasses);
@@ -390,7 +409,7 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
         spinner.setAdapter(spinnerClassesAdapter);
         builder.setView(spinner);
 
-        builder.setPositiveButton("Fatto", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(doneText, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //String newClass = editText.getText().toString().trim();
@@ -399,7 +418,7 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
             }
         });
 
-        builder.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(cancelText, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -413,8 +432,10 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
     //Dialog per cambiare la preferenza delle notifiche (cioè la priorità necessaria per ricevere la notifica)
     private void openNotificationPreferencesDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Filtro notifiche per priorità");
-        builder.setMessage("Scegli la priorità minima per ricevere una notifica");
+        String title = getString(R.string.mainActivity_notificationPreferencesDialog_title);
+        String message = getString(R.string.mainActivity_notificationPreferencesDialog_message);
+        builder.setTitle(title);
+        builder.setMessage(message);
 
         final Spinner spinner = new Spinner(this);
 
@@ -423,7 +444,7 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
         spinner.setAdapter(spinnerAdapter);
         builder.setView(spinner);
 
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(doneText, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //passo priorità selezionata (ovvero posizione + 1 perchè position parte da 0)
@@ -431,7 +452,7 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
             }
         });
 
-        builder.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(cancelText, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -574,45 +595,51 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
         adapterFilterTasks.notifyDataSetChanged();
     }
 
-    //Filtro la recyclerview in base all'opzione scelta nel dialogo che ha chiamato il metodo (filterName)
-    private void filterRecycleView(String filterName){
+    //Filtro la recyclerview in base all'opzione scelta nel dialogo che ha chiamato il metodo
+    private void filterRecycleView(Spinner spinner){
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         //resetto il vettore filteredTasks altrimenti compaiono anche task selezionati in precedenza
         filteredTasks.clear();
 
+        //Se l'elemento selezionato non è uno degli ultimi 3 (ovvero non è uno tra "non completati", "completati" e "tutti"
+        if (spinner.getSelectedItemPosition() < spinner.getCount() - 3){
 
-        switch (filterName){
-            case "Non completati":
-                for (int i = 0; i < mTasks.size(); i++){
-                    //status == 2 indica task completati
-                    if (mTasks.get(i).getTaskStatus() != 2)
-                        filteredTasks.add(mTasks.get(i));
-                }
-
-                initRecyclerView(recyclerView,adapterFilterTasks);
-                break;
-            case "Completati":
-                for (int i = 0; i < mTasks.size(); i++){
-                    if (mTasks.get(i).getTaskStatus() == 2)
-                        filteredTasks.add(mTasks.get(i));
-                }
-
-                initRecyclerView(recyclerView,adapterFilterTasks);
-                break;
-            case "Tutte":
-                //semplicemente inizializzo la recyclerview con l'adapter di tutti i task (mTasks)
-                initRecyclerView(recyclerView,adapterAllTasks);
-                break;
-            default:
-                for (int i = 0; i < mTasks.size(); i++){
-                    if (mTasks.get(i).getTaskClass().equals(filterName))
-                        filteredTasks.add(mTasks.get(i));
-                }
-
-                initRecyclerView(recyclerView,adapterFilterTasks);
-                break;
+            for (int i = 0; i < mTasks.size(); i++){
+                //se la classe corrisponde alla classe selezionata allora aggiungo il task ai task filtrati
+                if (mTasks.get(i).getTaskClass().equals(spinner.getSelectedItem().toString().trim()))
+                    filteredTasks.add(mTasks.get(i));
+            }
+            initRecyclerView(recyclerView,adapterFilterTasks);
         }
+        //altrimenti devo filtrare in base alla scelta
+        else{
+            //3 non completati, 2 completati, 1 tutti
+            //nota che l'ultima posizione è sempre minore di 1 di getCount
+            int id = spinner.getCount() - spinner.getSelectedItemPosition();
+            switch (id){
+                case 1: //tutti
+                    //semplicemente inizializzo la recyclerview con l'adapter di tutti i task (mTasks)
+                    initRecyclerView(recyclerView,adapterAllTasks);
+                    break;
+                case 2: //completati
+                    for (int i = 0; i < mTasks.size(); i++){
+                        if (mTasks.get(i).getTaskStatus() == 2)
+                            filteredTasks.add(mTasks.get(i));
+                    }
 
+                    initRecyclerView(recyclerView,adapterFilterTasks);
+                    break;
+                case 3: //non completati
+                    for (int i = 0; i < mTasks.size(); i++){
+                        //status == 2 indica task completati
+                        if (mTasks.get(i).getTaskStatus() != 2)
+                            filteredTasks.add(mTasks.get(i));
+                    }
+
+                    initRecyclerView(recyclerView,adapterFilterTasks);
+                    break;
+            }
+        }
     }
 
     //Rimuove da filtered tasks gli elementi rimossi da mTasks, in modo che la view filtrata sia sempre aggiornata
