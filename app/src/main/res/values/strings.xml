@@ -77,5 +77,16 @@ Istèntu means \"waste of time\" and the child, unfamiliar with the term, expect
 In fact, after a while (even several hours), between child\'s requests of giving him s\'istèntu and the corresponding aunt\'s answers \"wait, I\'m looking for it\", the woman will send his nephew/niece at his/her home saying: \"I don\'t have any, we\'ve run out of it"; at this point though, the child has already spent several hours away, allowing his parent to complete his commitment without any trouble.\n\n
 I\'ve decided to use this name for both my origins and the fact that I think this is a tool that helps keeping any distraction away.
     </string>
+    <string name="recyclerViewAdapter_priority_text">Priority:</string>
+    <string name="recyclerViewAdapter_removeDialog_title">Delete Task</string>
+    <string name="recyclerViewAdapter_removeDialog_message">Are you sure you want to delete</string>
+    <string name="affirmative_text">Yes</string>
+    <string name="negative_text">No</string>
+    <string name="recyclerViewAdapter_taskStatusText_status">Status:</string>
+    <string name="recyclerViewAdapter_taskStatusText_waiting">waiting</string>
+    <string name="recyclerViewAdapter_taskStatusText_running">running</string>
+    <string name="recyclerViewAdapter_taskStatusText_completedOn">Completed on</string>
+    <string name="recyclerViewAdapter_taskStatusText_completedAt">at</string>
+    <string name="recyclerViewAdapter_taskDueText_deadline">Deadline:</string>
 
 </resources>

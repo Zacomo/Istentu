@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
@@ -54,12 +55,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.taskName.setText(recViewTasks.get(position).getTaskName());
         holder.taskDescription.setText(recViewTasks.get(position).getTaskDescription());
         holder.taskClass.setText(recViewTasks.get(position).getTaskClass());
-        holder.taskPriority.setText("Priorità: " + recViewTasks.get(position).getTaskPriority());
+
+        String priorityText = mContext.getString(R.string.recyclerViewAdapter_priority_text);
+        holder.taskPriority.setText(priorityText + recViewTasks.get(position).getTaskPriority());
 
         // data nel formato dd/M/yyyy
-        holder.taskDue.setText(recViewTasks.get(position).taskDueToString());
+        holder.taskDue.setText(getTaskDueText(recViewTasks.get(position)));
 
-        holder.taskStatus.setText(recViewTasks.get(position).statusToString());
+        holder.taskStatus.setText(getTaskStatusText(recViewTasks.get(position)));
 
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,11 +92,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     //invoca un dialog che chiede conferma per l'eliminazione di un task
     private void removeDialog(final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle("Eliminazione Task");
-        builder.setMessage("Sei sicuro di voler eliminare " + "\"" + recViewTasks.get(position).getTaskName() + "\"");
+        String removeDialogTitle = mContext.getString(R.string.recyclerViewAdapter_removeDialog_title);
+        String removeDialogMessage = mContext.getString(R.string.recyclerViewAdapter_removeDialog_message);
+        builder.setTitle(removeDialogTitle);
+        builder.setMessage(removeDialogMessage+ "\"" + recViewTasks.get(position).getTaskName() + "\"");
         builder.setCancelable(false);
 
-        builder.setPositiveButton("Sì", new DialogInterface.OnClickListener() {
+        String affirmative = mContext.getString(R.string.affirmative_text);
+
+        builder.setPositiveButton(affirmative, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (tasksFH!=null){
@@ -101,7 +108,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     //elimino la notifica per il task che cancello
                     mainActivity.cancelAlarm(position);
 
-                    Toast.makeText(mContext, "Fatto!", Toast.LENGTH_SHORT).show();
+                    String doneText = mContext.getString(R.string.done_text);
+                    Toast.makeText(mContext, doneText, Toast.LENGTH_SHORT).show();
                     Task toRemove = recViewTasks.get(position);
                     recViewTasks.remove(position);
 
@@ -121,7 +129,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
         });
 
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        String negative = mContext.getString(R.string.negative_text);
+        builder.setNegativeButton(negative, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -130,6 +139,42 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         AlertDialog alert = builder.create();
         alert.show();
 
+    }
+
+    private String getTaskStatusText(Task mTask){
+        String statusText = mContext.getString(R.string.recyclerViewAdapter_taskStatusText_status);
+
+        switch (mTask.getTaskStatus()){
+            case 0:
+                statusText += mContext.getString(R.string.recyclerViewAdapter_taskStatusText_waiting);
+                break;
+            case 1:
+                statusText += mContext.getString(R.string.recyclerViewAdapter_taskStatusText_running);
+                break;
+            case 2:
+                String date = "";
+                String time = "";
+                String prova = "";
+                if (mTask.getDoneDate() != null){
+                    date = DateFormat.getDateInstance(DateFormat.SHORT).format(mTask.getDoneDate().getTime());
+                    time = DateFormat.getTimeInstance(DateFormat.SHORT).format(mTask.getDoneDate().getTime());
+                }
+                String completedOn = mContext.getString(R.string.recyclerViewAdapter_taskStatusText_completedOn);
+                String atText = mContext.getString(R.string.recyclerViewAdapter_taskStatusText_completedAt);
+                statusText = completedOn + "\n" + date + atText + time + "\n" + prova;
+                break;
+        }
+
+        return statusText;
+    }
+
+    private String getTaskDueText(Task mTask){
+        String date, time;
+        date = DateFormat.getDateInstance(DateFormat.SHORT).format(mTask.getTaskDue().getTime());
+        time = DateFormat.getTimeInstance(DateFormat.SHORT).format(mTask.getTaskDue().getTime());
+        String deadline = mContext.getString(R.string.recyclerViewAdapter_taskDueText_deadline);
+        String atText = mContext.getString(R.string.recyclerViewAdapter_taskStatusText_completedAt);
+        return deadline + date + atText + time;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

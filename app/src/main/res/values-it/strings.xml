@@ -76,6 +76,17 @@ Ho deciso di dare questo nome all\'app sia per le mie origini, sia perché la co
     <string name="infoActivity_repositoryLink"> Vedi il <a href = "https://github.com/Zacomo/Istentu">repository</a></string>
     <string name="infoActivity_message_title">Perché \"Istentapp\"?</string>
     <string name="infoActivity_author">Autore: Zacomo</string>
+    <string name="affirmative_text">Sì</string>
+    <string name="negative_text">No</string>
+    <string name="recyclerViewAdapter_priority_text">Priorità:</string>
+    <string name="recyclerViewAdapter_removeDialog_message">Sei sicuro di eliminare</string>
+    <string name="recyclerViewAdapter_removeDialog_title">Elimina attività</string>
+    <string name="recyclerViewAdapter_taskDueText_deadline">Scadenza:</string>
+    <string name="recyclerViewAdapter_taskStatusText_completedAt">alle</string>
+    <string name="recyclerViewAdapter_taskStatusText_completedOn">Completato il</string>
+    <string name="recyclerViewAdapter_taskStatusText_running">in corso</string>
+    <string name="recyclerViewAdapter_taskStatusText_status">Stato:</string>
+    <string name="recyclerViewAdapter_taskStatusText_waiting">in attesa</string>
 
 
 </resources>

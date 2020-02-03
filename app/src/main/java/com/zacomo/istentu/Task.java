@@ -105,36 +105,6 @@ public class Task {
         return status;
     }
 
-    public String statusToString(){
-        String statusString = "Stato: ";
-        switch (status){
-            case 0:
-                statusString += "in attesa";
-                break;
-            case 1:
-                statusString += "in corso";
-                break;
-            case 2:
-                String date = "";
-                String time = "";
-                String prova = "";
-                if (doneDate != null){
-                    date = DateFormat.getDateInstance(DateFormat.SHORT).format(doneDate.getTime());
-                    time = DateFormat.getTimeInstance(DateFormat.SHORT).format(doneDate.getTime());
-                }
-                statusString = "Completato in data\n" + date + " alle " + time + "\n" + prova;
-                break;
-        }
-        return statusString;
-    }
-
-    public String taskDueToString(){
-        String date, time;
-        date = DateFormat.getDateInstance(DateFormat.SHORT).format(taskDue.getTime());
-        time = DateFormat.getTimeInstance(DateFormat.SHORT).format(taskDue.getTime());
-        return "Scadenza: \n" + date + " alle " + time;
-    }
-
     public void setStatus(int status) {
         //dev'essere compreso tra 0 e 2
         if (status < 0 || status > 2)
