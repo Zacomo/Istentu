@@ -300,6 +300,8 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
             case R.id.usageGraph:
                 openUsageGraphActivity();
                 break;
+            case R.id.info:
+                openInfoActivity();
             default:
                 break;
         }
@@ -736,4 +738,10 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
         Intent intent = new Intent(this, UsageGraphActivity.class);
         startActivity(intent);
    }
+
+   //Apre l'activity in cui vengono mostrate alcune informazioni sull'app
+    public void openInfoActivity(){
+        Intent intent = new Intent(this, InfoActivity.class);
+        startActivity(intent);
+    }
 }

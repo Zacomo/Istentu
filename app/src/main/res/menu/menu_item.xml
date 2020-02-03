@@ -19,5 +19,8 @@
     <item
         android:id="@+id/usageGraph"
         android:title="Vedi statistiche"/>
+    <item
+        android:id="@+id/info"
+        android:title="Info"/>
 
 </menu>

@@ -10,7 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UsageGraphActivity"></activity>
+        <activity android:name=".InfoActivity"></activity>
+        <activity android:name=".UsageGraphActivity" />
         <activity
             android:name=".PostponeTaskActivity"
             android:excludeFromRecents="true"

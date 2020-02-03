@@ -21,7 +21,7 @@
 
     <string-array name="chart_types">
         <item>Grafico priorità</item>
-        <item>Grafico stato task</item>
+        <item>Grafico stato attività</item>
     </string-array>
 
     <string name="drawerOpen">drawerOpen</string>
@@ -39,18 +39,18 @@
     <string name="addDialog_time_text">Scegli un\'ora</string>
     <string name="addDialog_descriptionActivity_hint">Inserisci una descrizione</string>
     <string name="sortDialog_sortBy_text">Ordina per:</string>
-    <string name="mainActivity_insertData_success">Task aggiunto!</string>
+    <string name="mainActivity_insertData_success">Attività aggiunta!</string>
     <string name="mainActivity_moreInfoDialog_title">Cosa vuoi fare con</string>
-    <string name="mainActivity_moreInfoDialog_ModifyTask">Modifica Task</string>
+    <string name="mainActivity_moreInfoDialog_ModifyTask">Modifica attività</string>
     <string name="mainActivity_moreInfoDialog_setAsRunning">Segna come \"in corso\"</string>
-    <string name="mainActivity_moreInfoDialog_setAsDone">Segna come \"completato\"</string>
+    <string name="mainActivity_moreInfoDialog_setAsDone">Segna come \"completata\"</string>
     <string name="mainActivity_moreInfoDialog_setAsWaiting">Segna come \"in attesa\"</string>
     <string name="cancel_text">Annulla</string>
     <string name="mainActivity_filterDialog_title">Filtra per classe</string>
     <string name="mainActivity_filterDialog_message">Scegli la classe da visualizzare</string>
-    <string name="mainActivity_filterDialog_notCompleted">Non completati</string>
-    <string name="mainActivity_filterDialog_completed">Completati</string>
-    <string name="mainActivity_filterDialog_all">Tutti</string>
+    <string name="mainActivity_filterDialog_notCompleted">Non completate</string>
+    <string name="mainActivity_filterDialog_completed">Completate</string>
+    <string name="mainActivity_filterDialog_all">Tutte</string>
     <string name="mainActivity_addClassDialog_title">Nuova classe</string>
     <string name="mainActivity_addClassDialog_message">Inserisci il nome di una nuova classe:</string>
     <string name="mainActivity_addClassDialog_classAlreadyExists">Classe già presente!</string>
@@ -58,4 +58,19 @@
     <string name="mainActivity_removeDialog_message">Scegli la classe da rimuovere:</string>
     <string name="mainActivity_notificationPreferencesDialog_title">Filtro notifiche per priorità</string>
     <string name="mainActivity_notificationPreferencesDialog_message">Scegli la priorità minima per ricevere una notifica</string>
+    <string name="infoActivity_message">La parola Istèntu vuol dire (fare) tardi, indugio, da istentàre, cioè attendere, fare tardi, perdita di tempo, ma era una parola che definiva un espediente per intrattenere i bambini.
+        Quando le madri volevano sedare l’irrequietezza dei loro piccoli o volevano tenerli lontano per un certo lasso di tempo, escogitavano un ingannevole espediente: li mandavano a casa di qualche parente o conoscente dicendo loro
+        «vae dae tzia Maria …a ti dare s’istèntu
+        vai da zia Maria e dille di darti s’istèntu».
+        S’istèntu vuol dire, appunto, una perdita di tempo, ma il bambino, non conoscen-do il vero significato della parola, aspettava un qualcosa di materiale, una bella sorpresa, un qualcosa che però non arrivava mai.
+        Trascorso un bel po’ di tempo fra le richieste continue di dargli s’istèntu, da parte del bambino, e la solita risposta della donna (lu so irhande = lo sto cercando per dartelo), alla fine, passato un bel po’ di tempo, la tzia rimandava il piccolo dalla propria madre dicendo: «che l’ammus accabàu (s’istèntu) = non ne ho più, l’abbiamo finito», ma lo scopo di far trascorrere un del tempo e far rimanere il bimbo calmo nell’ingannevole attesa era stato raggiunto.
+        Testo Luuuuuuuuuuuuuuuuuuuuuuuuuuuuuunghissimo e caraaaaaaaaaaaaaaaaaatteriiiiiiiiiiiiiiiiiiiiiiiiii a casssooooooooooooooooooooooooooooo
+        Testo Luuuuuuuuuuuuuuuuuuuuuuuuuuuuuunghissimo e caraaaaaaaaaaaaaaaaaatteriiiiiiiiiiiiiiiiiiiiiiiiii a casssooooooooooooooooooooooooooooo
+        Testo Luuuuuuuuuuuuuuuuuuuuuuuuuuuuuunghissimo e caraaaaaaaaaaaaaaaaaatteriiiiiiiiiiiiiiiiiiiiiiiiii a casssooooooooooooooooooooooooooooo
+    </string>
+    <string name="infoActivity_title">Su Istentapp:</string>
+    <string name="infoActivity_repositoryLink"> Vedi il <a href = "https://github.com/Zacomo/Istentu">repository</a></string>
+    <string name="infoActivity_message_title">Perchè \"Istentapp\"?</string>
+    <string name="infoActivity_author">Autore: Zacomo</string>
+
 </resources>
