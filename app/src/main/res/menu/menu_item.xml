@@ -3,24 +3,24 @@
 
     <item
         android:id="@+id/sort"
-        android:title="Ordina"/>
+        android:title="@string/drawerMenu_sort"/>
     <item
         android:id="@+id/filter"
-        android:title="Filtra"/>
+        android:title="@string/drawerMenu_filter"/>
     <item
         android:id="@+id/addClass"
-        android:title="Aggiungi una classe"/>
+        android:title="@string/drawerMenu_addClass"/>
     <item
         android:id="@+id/removeClass"
-        android:title="Rimuovi una classe"/>
+        android:title="@string/drawerMenu_removeClass"/>
     <item
         android:id="@+id/notificationPreferences"
-        android:title="Preferenze notifiche"/>
+        android:title="@string/drawerMenu_notificationsPreferences"/>
     <item
         android:id="@+id/usageGraph"
-        android:title="Vedi statistiche"/>
+        android:title="@string/drawerMenu_usageCharts"/>
     <item
         android:id="@+id/info"
-        android:title="Info"/>
+        android:title="@string/drawerMenu_info"/>
 
 </menu>

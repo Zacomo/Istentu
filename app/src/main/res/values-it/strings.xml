@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>    <string name="app_name">Istentapp</string>
+    <string-array name="priority_values">
+        <item> 1 </item>
+        <item> 2 </item>
+        <item> 3 </item>
+        <item> 4 </item>
+        <item> 5 </item>
+    </string-array>
+
+    <string-array name="sort_types">
+        <item>Priorità</item>
+        <item>Data</item>
+        <item>Nome</item>
+    </string-array>
+
+    <string-array name="sort_order">
+        <item>Ascendente</item>
+        <item>Discendente</item>
+    </string-array>
+
+    <string-array name="chart_types">
+        <item>Grafico priorità</item>
+        <item>Grafico stato attività</item>
+    </string-array>
+
+    <string name="drawerOpen">drawerOpen</string>
+    <string name="drawerClose">drawerClose</string>
+
+    <string name="drawerMenu_info">Info</string>
+    <string name="drawerMenu_addClass">Aggiungi una classe</string>
+    <string name="drawerMenu_filter">Filtra</string>
+    <string name="drawerMenu_notificationsPreferences">Preferenze notifiche</string>
+    <string name="drawerMenu_removeClass">Rimuovi una classe</string>
+    <string name="drawerMenu_sort">Ordina</string>
+    <string name="drawerMenu_usageCharts">Grafici di utilizzo</string>
+
+    <string name="mainActivity">Attività</string>
+    <string name="postpone_date_text">Scegli una data</string>
+    <string name="postpone_time_text">Scegli un\'ora</string>
+    <string name="done_text">Fatto</string>
+    <string name="drawerLayout_menu_text">Menù</string>
+    <string name="addDialog_nameActivityHint">Inserisci il nome dell\'attività</string>
+    <string name="addDialog_priority_text">Priorità:</string>
+    <string name="addDialog_class_text">Categoria:</string>
+    <string name="addDialog_date_text">Scegli una data</string>
+    <string name="addDialog_time_text">Scegli un\'ora</string>
+    <string name="addDialog_descriptionActivity_hint">Inserisci una descrizione</string>
+    <string name="sortDialog_sortBy_text">Ordina per:</string>
+    <string name="mainActivity_insertData_success">Attività aggiunta!</string>
+    <string name="mainActivity_moreInfoDialog_title">Cosa vuoi fare con</string>
+    <string name="mainActivity_moreInfoDialog_ModifyTask">Modifica attività</string>
+    <string name="mainActivity_moreInfoDialog_setAsRunning">Segna come \"in corso\"</string>
+    <string name="mainActivity_moreInfoDialog_setAsDone">Segna come \"completata\"</string>
+    <string name="mainActivity_moreInfoDialog_setAsWaiting">Segna come \"in attesa\"</string>
+    <string name="cancel_text">Annulla</string>
+    <string name="mainActivity_filterDialog_title">Filtra per classe</string>
+    <string name="mainActivity_filterDialog_message">Scegli la categoria da visualizzare</string>
+    <string name="mainActivity_filterDialog_notCompleted">Non completate</string>
+    <string name="mainActivity_filterDialog_completed">Completate</string>
+    <string name="mainActivity_filterDialog_all">Tutte</string>
+    <string name="mainActivity_addClassDialog_title">Nuova categoria</string>
+    <string name="mainActivity_addClassDialog_message">Inserisci il nome di una nuova categoria:</string>
+    <string name="mainActivity_addClassDialog_classAlreadyExists">Categoria già presente!</string>
+    <string name="mainActivity_removeDialog_title">Rimuovi categoria</string>
+    <string name="mainActivity_removeDialog_message">Scegli la categoria da rimuovere:</string>
+    <string name="mainActivity_notificationPreferencesDialog_title">Filtro notifiche per priorità</string>
+    <string name="mainActivity_notificationPreferencesDialog_message">Scegli la priorità minima per ricevere una notifica</string>
+    <string name="infoActivity_title">Info su Istentapp</string>
+    <string name="infoActivity_message">Istentapp da <i>\"Istèntu\"</i> + app.\n
+La parola sarda istèntu viene da <i>\"istèntare\"</i>, cioè attendere, fare tardi, perdere tempo, intrattenersi in qualche modo.\n
+Tuttavia <i>\"s\'istèntu\"</i> era un espediente che i genitori utilizzavano per tenere impegnati e lontano da casa i propri figli, in modo da non creare problemi: l\'inganno consisteva nel mandare il figlio (o i figli) a casa di un parente vicino dicendo loro <i>\"vai da zia Maria e dille di darti \"s\'istèntu\"\"</i>.\n
+Istèntu vuol dire \"perdita di tempo\" e il bambino, non conoscendo il termine, si aspetta qualcosa di materiale che però non arriva mai.\n
+Infatti, trascorso un po\' di tempo (anche diverse ore) tra le richieste del bambino di dargli s\'istèntu e le continue risposte della zia \"sì, lo sto cercando\", la donna mandava a casa il bambino dicendo \"non ne ho più, l\'abbiamo finito\"; a questo punto però, il piccolo ha passato diverse ore fuori da casa sua, permettendo al genitore di svolgere i propri impegni senza dover pensare ad altro.\n\n
+Ho deciso di dare questo nome all\'app sia per le mie origini, sia perché la considero come uno strumento che aiuta a tenere lontane le distrazioni e a concentrarsi sui propri impegni.</string>
+    <string name="infoActivity_repositoryLink"> Vedi il <a href = "https://github.com/Zacomo/Istentu">repository</a></string>
+    <string name="infoActivity_message_title">Perché \"Istentapp\"?</string>
+    <string name="infoActivity_author">Autore: Zacomo</string>
+
+
+</resources>
