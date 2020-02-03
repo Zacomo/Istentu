@@ -5,7 +5,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,7 +16,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -70,12 +68,10 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
             if (intent.getStringExtra("action").equals("setRunning") && position > -1){
                 //chiamo metodo setRunning
                 setRunning(mTasks.get(position));
-                Toast.makeText(this, "In corso premuto", Toast.LENGTH_SHORT).show();
             }
             else if (intent.getStringExtra("action").equals("setDone") && position > -1){
                 //chiamo metodo setDone
                 setDone(mTasks.get(position));
-                Toast.makeText(this, "Fatto premuto", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -170,7 +166,6 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
             adapterAllTasks.notifyItemRemoved(newTask.getTaskPosition());
             adapterFilterTasks.notifyDataSetChanged();
 
-            Toast.makeText(this, String.valueOf(newTask.getTaskPosition()), Toast.LENGTH_SHORT).show();
             //aggiorno la posizione del task modificato che sarà size()
             //newTask.setTaskPosition(mTasks.size());
 
@@ -291,9 +286,6 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
             case R.id.usageGraph:
                 openUsageGraphActivity();
                 break;
-            case R.id.info:
-                Toast.makeText(this, "Info Selected!", Toast.LENGTH_SHORT).show();
-                break;
             default:
                 break;
         }
@@ -393,7 +385,6 @@ public class MainActivity extends AppCompatActivity implements AddDialog.AddDial
         builder.setMessage("Scegli la classe da rimuovere:");
 
         final Spinner spinner = new Spinner(this);
-        Toast.makeText(this, spinnerClasses.toString(), Toast.LENGTH_SHORT).show();
         ArrayAdapter<String> spinnerClassesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerClasses);
         spinnerClassesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerClassesAdapter);

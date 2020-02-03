@@ -32,7 +32,6 @@ public class PostponeTaskActivity extends AppCompatActivity implements DatePicke
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_postpone_task);
 
-        //E' un problema il fatto che passo il context di questa activity e non della main?
         taskFileHelper = new TaskFileHelper(this);
 
         if (taskFileHelper.readData("TaskList").isEmpty())
@@ -83,13 +82,6 @@ public class PostponeTaskActivity extends AppCompatActivity implements DatePicke
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    //    Intent intent = new Intent(this, MainActivity.class);
-    //    startActivity(intent);
-    }
-
     private void showDatePickerDialog(){
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 this,
@@ -115,6 +107,7 @@ public class PostponeTaskActivity extends AppCompatActivity implements DatePicke
 
     private void doneButtonPressed(){
 
+        //se la posizione del task inserito è valida, allora aggiorno la data e salvo i cambiamenti
         if (position > -1 && position < tasks.size()){
             tasks.get(position).setTaskDue(newDate);
             taskFileHelper.writeData(tasks,"TaskList");

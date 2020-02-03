@@ -14,14 +14,6 @@
         android:layout_height="match_parent"
         tools:openDrawer="start">
 
-        <!--
-        tools:context=".MainActivity"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-
-        erano in widget.constaintlayout
-        -->
 
         <RelativeLayout
             android:id="@+id/relativeLayoutToolbar"

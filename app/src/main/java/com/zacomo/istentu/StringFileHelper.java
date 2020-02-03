@@ -18,7 +18,7 @@ public class StringFileHelper {
         this.context = context;
     }
 
-
+    //Converte strings in json e la salva nelle shared preferences con chiave key
     public void writeData(ArrayList<String> strings, String key){
         SharedPreferences sharedPreferences = context.getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -28,6 +28,7 @@ public class StringFileHelper {
         editor.apply();
     }
 
+    //restituisce l'arraylist corrispondente alla chiave key
     public ArrayList<String> readData(String key){
         SharedPreferences sharedPreferences = context.getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();

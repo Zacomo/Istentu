@@ -7,7 +7,6 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -15,7 +14,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +21,7 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -51,10 +50,12 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
         dialogTitle = "Nuovo Task";
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
+        /*
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.layout_add_btn_dialog, null);
+        */
 
+        View view = View.inflate(getContext(),R.layout.layout_add_btn_dialog, null);
         FloatingActionButton fabDatePicker = view.findViewById(R.id.fabDatePicker);
         FloatingActionButton fabTimePicker = view.findViewById(R.id.fabTimePicker);
 
@@ -68,6 +69,8 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
 
         spinnerClasses = new ArrayList<>();
 
+        //assegno a bundle gli argomenti passati nella creazione di un nuovo addDialog
+        //conterrà la lista di classi ed eventualmente i dati di un task (se addDialog è in modifica)
         bundle = getArguments();
 
         if (bundle != null){
@@ -82,8 +85,6 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
             spinnerClasses.add(0,"Lavoro");
         if (spinnerClasses != null && !spinnerClasses.contains("Casa"))
             spinnerClasses.add(0,"Casa");
-
-        Toast.makeText(getContext(), spinnerClasses.toString(), Toast.LENGTH_SHORT).show();
 
         // Inizializzazione adapter delle classi
         ArrayAdapter<String> spinnerClassesAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, spinnerClasses);
@@ -187,45 +188,28 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
         //Cambio data taskDue senza cambiare ora
         taskDue.set(year,month,dayOfMonth,taskDue.get(Calendar.HOUR_OF_DAY),taskDue.get(Calendar.MINUTE),0);
 
-        //month incrementato di uno perchè il conteggio inizia da 0 (Gen == 0)
-        ++month;
-        String d,m;
-        if (dayOfMonth < 10)
-            d = "0"+dayOfMonth;
-        else
-            d = Integer.toString(dayOfMonth);
-        if (month < 10)
-            m = "0"+month;
-        else
-            m = Integer.toString(month);
-        String data = d + "/" + m + "/" + year;
-        textViewDate.setText(data);
+        String date = DateFormat.getDateInstance(DateFormat.SHORT).format(taskDue.getTime());
+
+        textViewDate.setText(date);
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         //Cambio ora taskDue senza cambiare data
         taskDue.set(taskDue.get(Calendar.YEAR),taskDue.get(Calendar.MONTH),taskDue.get(Calendar.DAY_OF_MONTH),hourOfDay,minute,0);
-        String h,m;
-        if (hourOfDay < 10)
-            h = "0"+hourOfDay;
-        else
-            h = Integer.toString(hourOfDay);
-        if (minute < 10)
-            m = "0"+minute;
-        else
-            m = Integer.toString(minute);
 
-        textViewTime.setText(h + ":" + m);
+        String time = DateFormat.getTimeInstance(DateFormat.SHORT).format(taskDue.getTime());
+
+        textViewTime.setText(time);
     }
 
-    //metodo da richiamare quando si vuole modificare un task
-    //si occupa di gestire le apparenze del dialogo di modifica
+    //metodo richiamato quando si  modifica un task
+    //gestisce le apparenze del dialog di modifica in modo che mostri i parametri del task selezionato
     public void editTask(ArrayAdapter<String> spinnerClassAdapter){
         dialogTitle = "Modifica " + "\"" + bundle.getString("taskName") + "\"";
         editTextInsertTaskName.setText(bundle.getString("taskName"));
 
-        //-1 perchè priorità va da 1 a 5
+        //-1 perchè priorità va da 1 a 5 mentre gli indici vanno da 0 a 4
         spinnerInsertPriority.setSelection(bundle.getInt("taskPriority")-1);
 
         // con priority funziona perchè uso numeri spinnerInsertClass;

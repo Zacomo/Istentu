@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.anychart.APIlib;
 import com.anychart.AnyChart;
@@ -28,7 +27,6 @@ public class UsageGraphActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usage_graph);
 
-        //forse devo passare context di main activity
         TaskFileHelper taskFileHelper = new TaskFileHelper(this);
         mTasks = taskFileHelper.readData("TaskList");
         Spinner spinner = findViewById(R.id.spinnerChartType);
@@ -38,13 +36,14 @@ public class UsageGraphActivity extends AppCompatActivity {
 
 
         if (mTasks.size() > 0) {
-
+            //creo i chart richiamando i metodi corrispondenti
             setUpPriorityPieChart();
             setUpTaskStatusPieChart();
 
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    //Rendo visibile il chart selezionato e invisibili gli altri
                     switch (position){
                         case 0:
                             anyChartViewStatus.setVisibility(View.INVISIBLE);
@@ -76,7 +75,7 @@ public class UsageGraphActivity extends AppCompatActivity {
 
         ArrayList<DataEntry> dataEntries = new ArrayList<>();
 
-        //con questo for conto quanti task di una determinata priorità ci sono
+        //con questo for conto il numero di task per priorità
         for (int i = 0; i < mTasks.size(); i++)
             numberTasksByPriority[mTasks.get(i).getTaskPriority()-1]++;
 
@@ -105,7 +104,7 @@ public class UsageGraphActivity extends AppCompatActivity {
 
         ArrayList<DataEntry> dataEntries = new ArrayList<>();
 
-        //con questo for conto quanti task di una determinata priorità ci sono
+        //con questo for conto il numero di task per status
         for (int i = 0; i < mTasks.size(); i++){
             switch (mTasks.get(i).getTaskStatus()){
                 case 0: //task in attesa
@@ -137,7 +136,5 @@ public class UsageGraphActivity extends AppCompatActivity {
         pie.data(dataEntries);
 
         anyChartViewStatus.setChart(pie);
-
-        Toast.makeText(this, "Helo", Toast.LENGTH_SHORT).show();
     }
 }

@@ -19,7 +19,7 @@ public class TaskFileHelper {
         this.context = context;
     }
 
-
+    //converte mTasks in json e lo salva nelle sharedPreferences con chiave key
     public void writeData(ArrayList<Task> mTasks, String key){
         SharedPreferences sharedPreferences = context.getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -29,6 +29,7 @@ public class TaskFileHelper {
         editor.apply();
     }
 
+    //restituisce l'arrayList di Task corrispondente alla chiave key dalle sharedPreferences
     public ArrayList<Task> readData(String key){
         SharedPreferences sharedPreferences = context.getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
@@ -42,28 +43,4 @@ public class TaskFileHelper {
 
         return mTasks;
     }
-
-/*
-    private void writeData(){
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(mTasks);
-        editor.putString("TaskList", json);
-        editor.apply();
-    }
-
-    private void readData(){
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("TaskList", null);
-        Type type = new TypeToken<ArrayList<Task>>() {}.getType();
-        mTasks = gson.fromJson(json, type);
-
-        if (mTasks == null){
-            mTasks = new ArrayList<>();
-        }
-    }
-*/
-
 }

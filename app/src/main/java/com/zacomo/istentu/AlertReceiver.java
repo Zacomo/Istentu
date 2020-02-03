@@ -18,11 +18,10 @@ public class AlertReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         notificationManager = NotificationManagerCompat.from(context);
-        //da intent prendere dati task da far comparire nel messaggio della notifica
-        //creazione notifica qua
         createNotification(context, intent);
     }
 
+    //metodo per la creazione di una notifica
     private void createNotification(Context context, Intent intent){
 
         //posizione task
@@ -30,13 +29,15 @@ public class AlertReceiver extends BroadcastReceiver {
 
         String title = "Hey!";
         String message = intent.getStringExtra("name") + " è scade oggi!";
+        //Se falso, c'è stato un problema col passaggio della posizione del task
         if (position > -1) {
 
             //creo intent per aprire activity di rinvio task; conterrà info task da passare a PostponeTaskActivity
             Intent postponeActivityIntent = new Intent(context, PostponeTaskActivity.class);
             postponeActivityIntent.putExtra("position", position);
             postponeActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            //wrapper per poter passare l'intent alla notifica
+
+            //wrapper per poter passare l'intent della postponeActivity alla notifica
             //position è l'id request
             PendingIntent postponeActionIntent = PendingIntent.getActivity(context,
                     position, postponeActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -62,7 +63,7 @@ public class AlertReceiver extends BroadcastReceiver {
             //position è l'id request
             PendingIntent setDoneActionIntent = PendingIntent.getActivity(context, position, setDoneIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-
+            //Creazione notifica ed aggiunta degli intent creati
             Notification notification = new NotificationCompat.Builder(context, CHANNEL_1_ID)
                     .setSmallIcon(R.drawable.ic_wb_incandescent_black_24dp)
                     .setContentTitle(title)
