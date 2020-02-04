@@ -57,7 +57,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.taskClass.setText(recViewTasks.get(position).getTaskClass());
 
         String priorityText = mContext.getString(R.string.recyclerViewAdapter_priority_text);
-        holder.taskPriority.setText(priorityText + recViewTasks.get(position).getTaskPriority());
+        String txt = priorityText + " " + recViewTasks.get(position).getTaskPriority();
+        holder.taskPriority.setText(txt);
 
         // data nel formato dd/M/yyyy
         holder.taskDue.setText(getTaskDueText(recViewTasks.get(position)));
@@ -142,7 +143,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     private String getTaskStatusText(Task mTask){
-        String statusText = mContext.getString(R.string.recyclerViewAdapter_taskStatusText_status);
+        String statusText = mContext.getString(R.string.recyclerViewAdapter_taskStatusText_status) + " ";
 
         switch (mTask.getTaskStatus()){
             case 0:
@@ -154,14 +155,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             case 2:
                 String date = "";
                 String time = "";
-                String prova = "";
                 if (mTask.getDoneDate() != null){
                     date = DateFormat.getDateInstance(DateFormat.SHORT).format(mTask.getDoneDate().getTime());
                     time = DateFormat.getTimeInstance(DateFormat.SHORT).format(mTask.getDoneDate().getTime());
                 }
                 String completedOn = mContext.getString(R.string.recyclerViewAdapter_taskStatusText_completedOn);
                 String atText = mContext.getString(R.string.recyclerViewAdapter_taskStatusText_completedAt);
-                statusText = completedOn + "\n" + date + atText + time + "\n" + prova;
+                statusText = completedOn + " " + date + "\n" + atText + " " + time;
                 break;
         }
 
@@ -174,7 +174,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         time = DateFormat.getTimeInstance(DateFormat.SHORT).format(mTask.getTaskDue().getTime());
         String deadline = mContext.getString(R.string.recyclerViewAdapter_taskDueText_deadline);
         String atText = mContext.getString(R.string.recyclerViewAdapter_taskStatusText_completedAt);
-        return deadline + date + atText + time;
+        return deadline + " " + date + "\n" + atText + " " + time;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

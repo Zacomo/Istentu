@@ -87,6 +87,11 @@ Ho deciso di dare questo nome all\'app sia per le mie origini, sia perché la co
     <string name="recyclerViewAdapter_taskStatusText_running">in corso</string>
     <string name="recyclerViewAdapter_taskStatusText_status">Stato:</string>
     <string name="recyclerViewAdapter_taskStatusText_waiting">in attesa</string>
+    <string name="usageGraphActivity_priorityPieChart_chartLegendTitle">Priorità</string>
+    <string name="usageGraphActivity_priorityPieChart_chartTitle">Distribuzione attività per priorità (P)</string>
+    <string name="usageGraphActivity_statusPieChart_chartLegendTitle">Stato</string>
+    <string name="usageGraphActivity_statusPieChart_chartTitle">Distribuzione attività per stato</string>
+    <string name="recyclerViewAdapter_taskStatusText_completed">completata</string>
 
 
 </resources>

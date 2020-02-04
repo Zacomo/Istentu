@@ -111,7 +111,8 @@ public class PostponeTaskActivity extends AppCompatActivity implements DatePicke
         if (position > -1 && position < tasks.size()){
             tasks.get(position).setTaskDue(newDate);
             taskFileHelper.writeData(tasks,"TaskList");
-            Toast.makeText(this, "done", Toast.LENGTH_SHORT).show();
+            String doneText = getString(R.string.done_text);
+            Toast.makeText(this, doneText, Toast.LENGTH_SHORT).show();
         }
         else
             Toast.makeText(this, "Not done, out of bounds", Toast.LENGTH_SHORT).show();

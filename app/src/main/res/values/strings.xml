@@ -88,5 +88,10 @@ I\'ve decided to use this name for both my origins and the fact that I think thi
     <string name="recyclerViewAdapter_taskStatusText_completedOn">Completed on</string>
     <string name="recyclerViewAdapter_taskStatusText_completedAt">at</string>
     <string name="recyclerViewAdapter_taskDueText_deadline">Deadline:</string>
+    <string name="usageGraphActivity_priorityPieChart_chartTitle">Task distribution by priority (P)</string>
+    <string name="usageGraphActivity_priorityPieChart_chartLegendTitle">Priority</string>
+    <string name="usageGraphActivity_statusPieChart_chartTitle">Distribution tasks by status</string>
+    <string name="usageGraphActivity_statusPieChart_chartLegendTitle">Status</string>
+    <string name="recyclerViewAdapter_taskStatusText_completed">completed</string>
 
 </resources>

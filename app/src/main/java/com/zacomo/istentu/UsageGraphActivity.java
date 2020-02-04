@@ -82,9 +82,11 @@ public class UsageGraphActivity extends AppCompatActivity {
         for (int i = 0; i < 5; i++)
             dataEntries.add(new ValueDataEntry("P: "+ Integer.toString(i+1),numberTasksByPriority[i]));
 
+        String chartTitle = getString(R.string.usageGraphActivity_priorityPieChart_chartTitle);
+        String chartLegendTitle = getString(R.string.usageGraphActivity_priorityPieChart_chartLegendTitle);
         pie.labels(true);
-        pie.title("Distribuzione dei task per priorità (P)");
-        pie.legend().title("Priorità");
+        pie.title(chartTitle);
+        pie.legend().title(chartLegendTitle);
         pie.legend().align("top");
         pie.legend().maxWidth("30%");
         pie.legend().itemsLayout("verticalExpandable");
@@ -120,14 +122,21 @@ public class UsageGraphActivity extends AppCompatActivity {
                     break;
             }
         }
+        String statusText = getString(R.string.recyclerViewAdapter_taskStatusText_status);
+        String waitingText = getString(R.string.recyclerViewAdapter_taskStatusText_waiting);
+        String runningText = getString(R.string.recyclerViewAdapter_taskStatusText_running);
+        String completedText = getString(R.string.recyclerViewAdapter_taskStatusText_completed);
 
-        dataEntries.add(new ValueDataEntry("Status: in attesa",numberTasksByStatus[0]));
-        dataEntries.add(new ValueDataEntry("Status: in corso",numberTasksByStatus[1]));
-        dataEntries.add(new ValueDataEntry("Status: completato",numberTasksByStatus[2]));
+        dataEntries.add(new ValueDataEntry(statusText + " " + waitingText,numberTasksByStatus[0]));
+        dataEntries.add(new ValueDataEntry(statusText + " " + runningText,numberTasksByStatus[1]));
+        dataEntries.add(new ValueDataEntry(statusText + " " + completedText,numberTasksByStatus[2]));
+
+        String chartTitle = getString(R.string.usageGraphActivity_statusPieChart_chartTitle);
+        String chartLegendTitle = getString(R.string.usageGraphActivity_statusPieChart_chartLegendTitle);
 
         pie.labels(true);
-        pie.title("Distribuzione dei task per stato");
-        pie.legend().title("Stato");
+        pie.title(chartTitle);
+        pie.legend().title(chartLegendTitle);
         pie.legend().align("top");
         pie.legend().maxWidth("40%");
         pie.legend().itemsLayout("verticalExpandable");
