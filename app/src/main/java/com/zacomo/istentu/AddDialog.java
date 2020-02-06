@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -123,22 +124,28 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
                 .setPositiveButton("Fatto", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
-                        //azioni da intraprendere quando si chiude la finestra di dialogo "con successo"
-                        String sClass ="";
-                        if (spinnerInsertClass.getSelectedItem() != null)
-                            sClass = spinnerInsertClass.getSelectedItem().toString();
+                        if (editTextInsertTaskName.getText().toString().trim().length() != 0) {
+                            //azioni da intraprendere quando si chiude la finestra di dialogo "con successo"
+                            String sClass ="";
+                            if (spinnerInsertClass.getSelectedItem() != null)
+                                sClass = spinnerInsertClass.getSelectedItem().toString();
 
-                        Task newTask = new Task(editTextInsertTaskName.getText().toString(),
-                                editTextInsertTaskDescription.getText().toString(),
-                                spinnerInsertPriority.getSelectedItemPosition() + 1,
-                                taskDue, sClass);
+                            Task newTask = new Task(editTextInsertTaskName.getText().toString().trim(),
+                                    editTextInsertTaskDescription.getText().toString().trim(),
+                                    spinnerInsertPriority.getSelectedItemPosition() + 1,
+                                    taskDue, sClass);
 
-                        //se presente la chiave "taskPosition" allora sono in modifica, pertanto devo
-                        //mantenere la posizione del task pre modifica
-                        if (bundle.containsKey("taskPosition"))
-                            newTask.setTaskPosition(bundle.getInt("taskPosition"));
+                            //se presente la chiave "taskPosition" allora sono in modifica, pertanto devo
+                            //mantenere la posizione del task pre modifica
+                            if (bundle.containsKey("taskPosition"))
+                                newTask.setTaskPosition(bundle.getInt("taskPosition"));
 
-                        listener.insertData(newTask);
+                            listener.insertData(newTask);
+                        }
+                        else{
+                            String nameMissing = getString(R.string.addDialog_nameActivityMissing);
+                            Toast.makeText(getContext(), nameMissing, Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
 
