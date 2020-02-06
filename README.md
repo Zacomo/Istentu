@@ -2,7 +2,7 @@
 
 Istentapp è un'applicazione android per la gestione dei propri impegni.
 
-[![Platform](https://img.shields.io/badge/Platform-Android-brightgreen)](https://www.android.com/)
+[![Platform](https://img.shields.io/badge/Platform-Android-brightgreen)](https://www.android.com/) <br>
 [![Languages](https://img.shields.io/badge/Language-Java-blue)](https://www.java.com/)
 
 ## Caratteristiche
