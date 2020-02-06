@@ -47,7 +47,7 @@ public class AddDialog extends AppCompatDialogFragment implements DatePickerDial
     @Override
     public Dialog onCreateDialog(@Nullable final Bundle savedInstanceState) {
 
-        dialogTitle = "Nuovo Task";
+        dialogTitle = getString(R.string.addDialog_dialogTitle);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         /*

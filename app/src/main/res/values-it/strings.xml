@@ -92,6 +92,7 @@ Ho deciso di dare questo nome all\'app sia per le mie origini, sia perché la co
     <string name="usageGraphActivity_statusPieChart_chartLegendTitle">Stato</string>
     <string name="usageGraphActivity_statusPieChart_chartTitle">Distribuzione attività per stato</string>
     <string name="recyclerViewAdapter_taskStatusText_completed">completata</string>
+    <string name="addDialog_dialogTitle">Nuova attività</string>
 
 
 </resources>

@@ -93,5 +93,6 @@ I\'ve decided to use this name for both my origins and the fact that I think thi
     <string name="usageGraphActivity_statusPieChart_chartTitle">Distribution tasks by status</string>
     <string name="usageGraphActivity_statusPieChart_chartLegendTitle">Status</string>
     <string name="recyclerViewAdapter_taskStatusText_completed">completed</string>
+    <string name="addDialog_dialogTitle">New task</string>
 
 </resources>
