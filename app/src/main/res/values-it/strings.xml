@@ -96,6 +96,7 @@ Ho deciso di dare questo nome all\'app sia per le mie origini, sia perché la co
     <string name="addDialog_nameActivityMissing">Attività non aggiunta: nome mancante</string>
     <string name="postponeTaskActivity_header_title">Rinvia attività</string>
     <string name="usageGraphActivity_header_text">Grafici di utilizzo</string>
+    <string name="sortDialog_title_text">Ordina attività</string>
 
 
 </resources>

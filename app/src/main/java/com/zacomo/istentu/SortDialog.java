@@ -28,15 +28,18 @@ public class SortDialog extends DialogFragment {
 
         View view = inflater.inflate(R.layout.layout_sort_task_dialog, null);
 
+        String title = getString(R.string.sortDialog_title_text);
+        String cancelText = getString(R.string.cancel_text);
+        String doneText = getString(R.string.done_text);
         builder.setView(view)
-                .setTitle("Ordina task")
-                .setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
+                .setTitle(title)
+                .setNegativeButton(cancelText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
                 })
-                .setPositiveButton("Fatto", new DialogInterface.OnClickListener() {
+                .setPositiveButton(doneText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Integer sType = sortType.getSelectedItemPosition();
