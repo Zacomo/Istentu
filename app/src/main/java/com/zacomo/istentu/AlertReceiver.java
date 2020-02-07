@@ -28,7 +28,7 @@ public class AlertReceiver extends BroadcastReceiver {
         int position = intent.getIntExtra("position", -1);
 
         String title = "Hey!";
-        String message = intent.getStringExtra("name") + " è scade oggi!";
+        String message = intent.getStringExtra("name") + context.getString(R.string.alertReceiver_notificationMessage);
         //Se falso, c'è stato un problema col passaggio della posizione del task
         if (position > -1) {
 
@@ -72,9 +72,9 @@ public class AlertReceiver extends BroadcastReceiver {
                     .setCategory(NotificationCompat.CATEGORY_REMINDER)
                     .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
                     .setAutoCancel(true)
-                    .addAction(R.drawable.ic_watch_later_black_24dp, "Rinvia", postponeActionIntent)
-                    .addAction(R.drawable.ic_autorenew_black_24dp, "In corso", setRunningActionIntent)
-                    .addAction(R.drawable.ic_done_black_24dp, "Fatto", setDoneActionIntent)
+                    .addAction(R.drawable.ic_watch_later_black_24dp, context.getString(R.string.alertReceiver_notificationAction_postpone_text), postponeActionIntent)
+                    .addAction(R.drawable.ic_autorenew_black_24dp, context.getString(R.string.alertReceiver_notificationAction_setAsRunning_text), setRunningActionIntent)
+                    .addAction(R.drawable.ic_done_black_24dp, context.getString(R.string.alertReceiver_notificationAction_setAsDone_text), setDoneActionIntent)
                     .build();
 
             //mando effettivamente la notifica

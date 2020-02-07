@@ -98,5 +98,9 @@ I\'ve decided to use this name for both my origins and the fact that I think thi
     <string name="usageGraphActivity_header_text">Usage Graphs</string>
     <string name="postponeTaskActivity_header_title">Postpone task</string>
     <string name="sortDialog_title_text">Sort tasks</string>
+    <string name="alertReceiver_notificationMessage">is due today!</string>
+    <string name="alertReceiver_notificationAction_postpone_text">Postpone</string>
+    <string name="alertReceiver_notificationAction_setAsRunning_text">Set as running</string>
+    <string name="alertReceiver_notificationAction_setAsDone_text">Already done</string>
 
 </resources>

@@ -97,6 +97,10 @@ Ho deciso di dare questo nome all\'app sia per le mie origini, sia perché la co
     <string name="postponeTaskActivity_header_title">Rinvia attività</string>
     <string name="usageGraphActivity_header_text">Grafici di utilizzo</string>
     <string name="sortDialog_title_text">Ordina attività</string>
+    <string name="alertReceiver_notificationAction_postpone_text">Rinvia</string>
+    <string name="alertReceiver_notificationAction_setAsDone_text">Già completata</string>
+    <string name="alertReceiver_notificationAction_setAsRunning_text">In corso</string>
+    <string name="alertReceiver_notificationMessage">scade oggi!</string>
 
 
 </resources>
