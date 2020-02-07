@@ -95,5 +95,7 @@ I\'ve decided to use this name for both my origins and the fact that I think thi
     <string name="recyclerViewAdapter_taskStatusText_completed">completed</string>
     <string name="addDialog_dialogTitle">New task</string>
     <string name="addDialog_nameActivityMissing">Task not added: name missing</string>
+    <string name="usageGraphActivity_header_text">Usage Graphs</string>
+    <string name="postponeTaskActivity_header_title">Postpone task</string>
 
 </resources>

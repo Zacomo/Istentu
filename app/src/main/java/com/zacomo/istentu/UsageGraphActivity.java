@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
-
+import androidx.appcompat.widget.Toolbar;
 import com.anychart.APIlib;
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
@@ -32,7 +32,10 @@ public class UsageGraphActivity extends AppCompatActivity {
         Spinner spinner = findViewById(R.id.spinnerChartType);
         anyChartViewPriority = findViewById(R.id.anyChartViewPriority);
         anyChartViewStatus = findViewById(R.id.anyChartViewStatus);
-
+        Toolbar toolbar = findViewById(R.id.usageGraphHeader);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.usageGraphActivity_header_text));
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
 
 
         if (mTasks.size() > 0) {

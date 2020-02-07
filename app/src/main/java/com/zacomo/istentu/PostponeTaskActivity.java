@@ -2,6 +2,7 @@ package com.zacomo.istentu;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -46,6 +47,11 @@ public class PostponeTaskActivity extends AppCompatActivity implements DatePicke
 
         textViewDate = findViewById(R.id.textViewPostponeDate);
         textViewTime = findViewById(R.id.textViewPostponeTime);
+
+        Toolbar toolbar = findViewById(R.id.postponeActivityHeader);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.postponeTaskActivity_header_title));
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         if (tasks.size() > 0 && position > -1){
             textViewDate.setText(DateFormat.getDateInstance(DateFormat.SHORT).format(tasks.get(position).getTaskDue().getTime()));

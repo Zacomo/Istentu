@@ -94,9 +94,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private void removeDialog(final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         String removeDialogTitle = mContext.getString(R.string.recyclerViewAdapter_removeDialog_title);
-        String removeDialogMessage = mContext.getString(R.string.recyclerViewAdapter_removeDialog_message) + "?";
+        String removeDialogMessage = mContext.getString(R.string.recyclerViewAdapter_removeDialog_message);
         builder.setTitle(removeDialogTitle);
-        builder.setMessage(removeDialogMessage+ "\"" + recViewTasks.get(position).getTaskName() + "\"");
+        builder.setMessage(removeDialogMessage+ "\"" + recViewTasks.get(position).getTaskName() + "\"?");
         builder.setCancelable(false);
 
         String affirmative = mContext.getString(R.string.affirmative_text);
