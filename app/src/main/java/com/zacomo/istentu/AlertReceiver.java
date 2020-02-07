@@ -28,7 +28,7 @@ public class AlertReceiver extends BroadcastReceiver {
         int position = intent.getIntExtra("position", -1);
 
         String title = "Hey!";
-        String message = intent.getStringExtra("name") + context.getString(R.string.alertReceiver_notificationMessage);
+        String message = intent.getStringExtra("name")+ " " + context.getString(R.string.alertReceiver_notificationMessage);
         //Se falso, c'è stato un problema col passaggio della posizione del task
         if (position > -1) {
 
