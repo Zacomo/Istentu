@@ -96,6 +96,7 @@ public class PostponeTaskActivity extends AppCompatActivity implements DatePicke
                 tasks.get(position).getTaskDue().get(Calendar.MONTH),
                 tasks.get(position).getTaskDue().get(Calendar.DAY_OF_MONTH)
         );
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
         datePickerDialog.show();
     }
 
